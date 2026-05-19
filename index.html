@@ -1,1238 +1,2806 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>The Future of Fixes — Middleware OpsAI</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-  /* ============ MIDDLEWARE BRAND TOKENS ============ */
-  :root{
-    --mw-bg:#0B0F1E;
-    --mw-bg-2:#0F1426;
-    --mw-bg-3:#161B33;
-    --mw-line:#23284A;
-    --mw-line-2:#2D3358;
-    --mw-ink:#F2F4FF;
-    --mw-ink-2:#C6CAE5;
-    --mw-muted:#7A82A8;
-    --mw-muted-2:#4F557A;
-    --mw-blue:#5B6EFF;
-    --mw-blue-2:#3B5EFF;
-    --mw-violet:#8B5CF6;
-    --mw-cyan:#22D3EE;
-    --mw-green:#10D9A5;
-    --mw-amber:#FBBF24;
-    --mw-red:#FB6E52;
-    --mw-grid:rgba(91,110,255,0.04);
-    --mw-glow:rgba(91,110,255,0.35);
-    --gradient-1:linear-gradient(135deg,#5B6EFF 0%,#8B5CF6 50%,#22D3EE 100%);
-    --gradient-2:linear-gradient(135deg,#5B6EFF 0%,#22D3EE 100%);
-  }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>The Future of Fixes — Middleware OpsAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ============ MIDDLEWARE BRAND TOKENS ============ */
+      :root {
+        --mw-bg: #0b0f1e;
+        --mw-bg-2: #0f1426;
+        --mw-bg-3: #161b33;
+        --mw-line: #23284a;
+        --mw-line-2: #2d3358;
+        --mw-ink: #f2f4ff;
+        --mw-ink-2: #c6cae5;
+        --mw-muted: #7a82a8;
+        --mw-muted-2: #4f557a;
+        --mw-blue: #5b6eff;
+        --mw-blue-2: #3b5eff;
+        --mw-violet: #8b5cf6;
+        --mw-cyan: #22d3ee;
+        --mw-green: #10d9a5;
+        --mw-amber: #fbbf24;
+        --mw-red: #fb6e52;
+        --mw-grid: rgba(91, 110, 255, 0.04);
+        --mw-glow: rgba(91, 110, 255, 0.35);
+        --gradient-1: linear-gradient(
+          135deg,
+          #5b6eff 0%,
+          #8b5cf6 50%,
+          #22d3ee 100%
+        );
+        --gradient-2: linear-gradient(135deg, #5b6eff 0%, #22d3ee 100%);
+      }
 
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{
-    height:100%;width:100%;
-    background:var(--mw-bg);
-    color:var(--mw-ink);
-    font-family:'Inter',ui-sans-serif,system-ui,sans-serif;
-    -webkit-font-smoothing:antialiased;
-    overflow:hidden;
-  }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        background: var(--mw-bg);
+        color: var(--mw-ink);
+        font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        overflow: hidden;
+      }
 
-  .stage{
-    position:fixed;inset:0;
-    display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(circle at 20% 30%, rgba(91,110,255,0.06) 0%, transparent 50%),
-               radial-gradient(circle at 80% 70%, rgba(139,92,246,0.05) 0%, transparent 50%),
-               var(--mw-bg);
-  }
+      .stage {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          radial-gradient(
+            circle at 20% 30%,
+            rgba(91, 110, 255, 0.06) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 70%,
+            rgba(139, 92, 246, 0.05) 0%,
+            transparent 50%
+          ),
+          var(--mw-bg);
+      }
 
-  .stage::before{
-    content:"";position:absolute;inset:0;
-    background-image:
-      linear-gradient(var(--mw-grid) 1px,transparent 1px),
-      linear-gradient(90deg,var(--mw-grid) 1px,transparent 1px);
-    background-size:64px 64px;
-    mask-image:radial-gradient(circle at center,black 0%,transparent 80%);
-    -webkit-mask-image:radial-gradient(circle at center,black 0%,transparent 80%);
-    pointer-events:none;
-    animation:gridShift 60s linear infinite;
-  }
-  @keyframes gridShift{
-    to{background-position:64px 64px,64px 64px}
-  }
+      .stage::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(var(--mw-grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--mw-grid) 1px, transparent 1px);
+        background-size: 64px 64px;
+        mask-image: radial-gradient(
+          circle at center,
+          black 0%,
+          transparent 80%
+        );
+        -webkit-mask-image: radial-gradient(
+          circle at center,
+          black 0%,
+          transparent 80%
+        );
+        pointer-events: none;
+        animation: gridShift 60s linear infinite;
+      }
+      @keyframes gridShift {
+        to {
+          background-position:
+            64px 64px,
+            64px 64px;
+        }
+      }
 
-  .stage::after{
-    content:"";position:absolute;
-    width:600px;height:600px;
-    background:radial-gradient(circle, rgba(91,110,255,0.08) 0%, transparent 70%);
-    border-radius:50%;
-    top:-200px;right:-200px;
-    pointer-events:none;
-    animation:float 20s ease-in-out infinite;
-  }
-  @keyframes float{
-    0%,100%{transform:translate(0,0)}
-    50%{transform:translate(-100px,100px)}
-  }
+      .stage::after {
+        content: "";
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(
+          circle,
+          rgba(91, 110, 255, 0.08) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        top: -200px;
+        right: -200px;
+        pointer-events: none;
+        animation: float 20s ease-in-out infinite;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        50% {
+          transform: translate(-100px, 100px);
+        }
+      }
 
-  .slides-wrap{
-    position:relative;
-    width:min(1280px,95vw);
-    aspect-ratio:16/9;
-    max-height:90vh;
-    z-index:2;
-  }
+      .slides-wrap {
+        position: relative;
+        width: min(1280px, 95vw);
+        aspect-ratio: 16/9;
+        max-height: 90vh;
+        z-index: 2;
+      }
 
-  .slide{
-    position:absolute;inset:0;
-    background:linear-gradient(135deg,var(--mw-bg) 0%,var(--mw-bg-2) 100%);
-    border:1px solid var(--mw-line);
-    border-radius:16px;
-    overflow:hidden;
-    box-shadow:
-      0 50px 100px rgba(0,0,0,.5),
-      0 0 0 1px rgba(91,110,255,0.08),
-      inset 0 1px 0 rgba(255,255,255,.04);
-    opacity:0;
-    transform:translateX(40px) scale(0.98);
-    transition:opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
-    pointer-events:none;
-  }
+      .slide {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          var(--mw-bg) 0%,
+          var(--mw-bg-2) 100%
+        );
+        border: 1px solid var(--mw-line);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow:
+          0 50px 100px rgba(0, 0, 0, 0.5),
+          0 0 0 1px rgba(91, 110, 255, 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        opacity: 0;
+        transform: translateX(40px) scale(0.98);
+        transition:
+          opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+      }
 
-  .slide.active{
-    opacity:1;
-    transform:translateX(0) scale(1);
-    pointer-events:auto;
-  }
+      .slide.active {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        pointer-events: auto;
+      }
 
-  .slide.exiting{
-    opacity:0;
-    transform:translateX(-40px) scale(0.98);
-  }
+      .slide.exiting {
+        opacity: 0;
+        transform: translateX(-40px) scale(0.98);
+      }
 
-  .slide::before{
-    content:"";position:absolute;inset:0;
-    background-image:
-      linear-gradient(rgba(91,110,255,0.025) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(91,110,255,0.025) 1px,transparent 1px);
-    background-size:40px 40px;
-    pointer-events:none;
-    z-index:0;
-  }
+      .slide::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(91, 110, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(91, 110, 255, 0.025) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+        z-index: 0;
+      }
 
-  .pad{
-    position:relative;z-index:2;
-    padding:56px 64px;height:100%;
-    display:flex;flex-direction:column;
-  }
+      .pad {
+        position: relative;
+        z-index: 2;
+        padding: 56px 64px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
 
-  .brand{
-    position:absolute;top:24px;left:32px;z-index:3;
-    display:flex;align-items:center;gap:10px;
-    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mw-muted);
-    letter-spacing:.18em;text-transform:uppercase;
-  }
-  .brand .mw-mark{
-    width:22px;height:22px;border-radius:6px;
-    background:var(--gradient-1);
-    display:flex;align-items:center;justify-content:center;
-    color:white;font-weight:800;font-size:13px;font-family:'Inter';
-    box-shadow:0 0 16px var(--mw-glow);
-  }
+      .brand {
+        position: absolute;
+        top: 24px;
+        left: 32px;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: var(--mw-muted);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+      .brand .mw-mark {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        background: var(--gradient-1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 800;
+        font-size: 13px;
+        font-family: "Inter";
+        box-shadow: 0 0 16px var(--mw-glow);
+      }
 
-  .meta{
-    position:absolute;top:24px;right:32px;z-index:3;
-    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mw-muted);
-    letter-spacing:.12em;display:flex;align-items:center;gap:10px;
-  }
-  .meta .dot{
-    width:6px;height:6px;border-radius:50%;
-    background:var(--mw-green);box-shadow:0 0 10px var(--mw-green);
-    animation:pulse 2s ease-in-out infinite;
-  }
-  .meta .dot.alert{
-    background:var(--mw-red);box-shadow:0 0 10px var(--mw-red);
-  }
-  @keyframes pulse{
-    0%,100%{opacity:1;transform:scale(1)}
-    50%{opacity:.6;transform:scale(1.15)}
-  }
+      .meta {
+        position: absolute;
+        top: 24px;
+        right: 32px;
+        z-index: 3;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: var(--mw-muted);
+        letter-spacing: 0.12em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .meta .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--mw-green);
+        box-shadow: 0 0 10px var(--mw-green);
+        animation: pulse 2s ease-in-out infinite;
+      }
+      .meta .dot.alert {
+        background: var(--mw-red);
+        box-shadow: 0 0 10px var(--mw-red);
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.6;
+          transform: scale(1.15);
+        }
+      }
 
-  .pageno{
-    position:absolute;bottom:20px;right:32px;z-index:3;
-    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mw-muted);letter-spacing:.12em;
-  }
-  .foot-tick{
-    position:absolute;bottom:20px;left:32px;z-index:3;
-    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mw-muted-2);letter-spacing:.08em;
-  }
+      .pageno {
+        position: absolute;
+        bottom: 20px;
+        right: 32px;
+        z-index: 3;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: var(--mw-muted);
+        letter-spacing: 0.12em;
+      }
+      .foot-tick {
+        position: absolute;
+        bottom: 20px;
+        left: 32px;
+        z-index: 3;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: var(--mw-muted-2);
+        letter-spacing: 0.08em;
+      }
 
-  h1,h2,h3{font-weight:600;letter-spacing:-0.03em;line-height:1.02;font-family:'Inter'}
-  h1{font-size:96px;font-weight:700}
-  h2{font-size:64px;font-weight:600}
-  h3{font-size:36px;font-weight:600}
-  .serif{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;letter-spacing:-0.015em}
-  .mono{font-family:'JetBrains Mono',monospace}
-  .muted{color:var(--mw-muted)}
-  .ink-2{color:var(--mw-ink-2)}
+      h1,
+      h2,
+      h3 {
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        line-height: 1.02;
+        font-family: "Inter";
+      }
+      h1 {
+        font-size: 96px;
+        font-weight: 700;
+      }
+      h2 {
+        font-size: 64px;
+        font-weight: 600;
+      }
+      h3 {
+        font-size: 36px;
+        font-weight: 600;
+      }
+      .serif {
+        font-family: "Instrument Serif", serif;
+        font-style: italic;
+        font-weight: 400;
+        letter-spacing: -0.015em;
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+      }
+      .muted {
+        color: var(--mw-muted);
+      }
+      .ink-2 {
+        color: var(--mw-ink-2);
+      }
 
-  .grad{
-    background:var(--gradient-1);
-    -webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;
-    color:transparent;
-  }
-  .blue{color:var(--mw-blue)}
-  .violet{color:var(--mw-violet)}
-  .cyan{color:var(--mw-cyan)}
-  .green{color:var(--mw-green)}
-  .red{color:var(--mw-red)}
+      .grad {
+        background: var(--gradient-1);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+      }
+      .blue {
+        color: var(--mw-blue);
+      }
+      .violet {
+        color: var(--mw-violet);
+      }
+      .cyan {
+        color: var(--mw-cyan);
+      }
+      .green {
+        color: var(--mw-green);
+      }
+      .red {
+        color: var(--mw-red);
+      }
 
-  .kicker{
-    font-family:'JetBrains Mono',monospace;font-size:11px;
-    color:var(--mw-blue);letter-spacing:.22em;text-transform:uppercase;
-    margin-bottom:20px;
-    display:inline-flex;align-items:center;gap:10px;
-  }
-  .kicker::before{
-    content:"";width:24px;height:1px;background:var(--mw-blue);
-  }
+      .kicker {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: var(--mw-blue);
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .kicker::before {
+        content: "";
+        width: 24px;
+        height: 1px;
+        background: var(--mw-blue);
+      }
 
-  .lede{font-size:24px;line-height:1.4;color:var(--mw-ink-2);max-width:900px;font-weight:400}
+      .lede {
+        font-size: 24px;
+        line-height: 1.4;
+        color: var(--mw-ink-2);
+        max-width: 900px;
+        font-weight: 400;
+      }
 
-  .tag{
-    display:inline-flex;align-items:center;gap:8px;
-    font-family:'JetBrains Mono',monospace;font-size:11px;
-    padding:6px 14px;border:1px solid var(--mw-line);border-radius:999px;
-    color:var(--mw-ink-2);text-transform:uppercase;letter-spacing:.14em;
-    background:rgba(91,110,255,0.04);
-    backdrop-filter:blur(8px);
-  }
-  .tag.live{
-    color:var(--mw-red);border-color:rgba(251,110,82,.35);
-    background:rgba(251,110,82,.06);
-  }
-  .tag.live::before{
-    content:"";width:6px;height:6px;border-radius:50%;
-    background:var(--mw-red);box-shadow:0 0 12px var(--mw-red);
-    animation:pulse 1.5s ease-in-out infinite;
-  }
-  .tag.glow{
-    border-color:rgba(91,110,255,.4);
-    background:rgba(91,110,255,.08);
-    box-shadow:0 0 24px rgba(91,110,255,.15);
-  }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        padding: 6px 14px;
+        border: 1px solid var(--mw-line);
+        border-radius: 999px;
+        color: var(--mw-ink-2);
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        background: rgba(91, 110, 255, 0.04);
+        backdrop-filter: blur(8px);
+      }
+      .tag.live {
+        color: var(--mw-red);
+        border-color: rgba(251, 110, 82, 0.35);
+        background: rgba(251, 110, 82, 0.06);
+      }
+      .tag.live::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--mw-red);
+        box-shadow: 0 0 12px var(--mw-red);
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+      .tag.glow {
+        border-color: rgba(91, 110, 255, 0.4);
+        background: rgba(91, 110, 255, 0.08);
+        box-shadow: 0 0 24px rgba(91, 110, 255, 0.15);
+      }
 
-  .row{display:flex;gap:24px}
-  .col{flex:1}
-  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:28px}
-  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+      .row {
+        display: flex;
+        gap: 24px;
+      }
+      .col {
+        flex: 1;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .grid-4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+      }
 
-  .slide.active .reveal{
-    animation:reveal 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
-    opacity:0;
-    transform:translateY(20px);
-  }
-  .reveal{opacity:0}
-  @keyframes reveal{
-    to{opacity:1;transform:translateY(0)}
-  }
-  .slide.active .reveal:nth-of-type(1){animation-delay:.1s}
-  .slide.active .reveal:nth-of-type(2){animation-delay:.2s}
-  .slide.active .reveal:nth-of-type(3){animation-delay:.3s}
-  .slide.active .reveal:nth-of-type(4){animation-delay:.4s}
-  .slide.active .reveal:nth-of-type(5){animation-delay:.5s}
-  .slide.active .reveal:nth-of-type(6){animation-delay:.6s}
-  .slide.active .reveal:nth-of-type(7){animation-delay:.7s}
-  .slide.active .reveal:nth-of-type(8){animation-delay:.8s}
-  .slide.active [data-delay="1"]{animation-delay:.1s !important}
-  .slide.active [data-delay="2"]{animation-delay:.2s !important}
-  .slide.active [data-delay="3"]{animation-delay:.3s !important}
-  .slide.active [data-delay="4"]{animation-delay:.4s !important}
-  .slide.active [data-delay="5"]{animation-delay:.5s !important}
-  .slide.active [data-delay="6"]{animation-delay:.6s !important}
-  .slide.active [data-delay="7"]{animation-delay:.7s !important}
-  .slide.active [data-delay="8"]{animation-delay:.8s !important}
-  .slide.active [data-delay="9"]{animation-delay:.9s !important}
-  .slide.active [data-delay="10"]{animation-delay:1s !important}
+      .slide.active .reveal {
+        animation: reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      .reveal {
+        opacity: 0;
+      }
+      @keyframes reveal {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .slide.active .reveal:nth-of-type(1) {
+        animation-delay: 0.1s;
+      }
+      .slide.active .reveal:nth-of-type(2) {
+        animation-delay: 0.2s;
+      }
+      .slide.active .reveal:nth-of-type(3) {
+        animation-delay: 0.3s;
+      }
+      .slide.active .reveal:nth-of-type(4) {
+        animation-delay: 0.4s;
+      }
+      .slide.active .reveal:nth-of-type(5) {
+        animation-delay: 0.5s;
+      }
+      .slide.active .reveal:nth-of-type(6) {
+        animation-delay: 0.6s;
+      }
+      .slide.active .reveal:nth-of-type(7) {
+        animation-delay: 0.7s;
+      }
+      .slide.active .reveal:nth-of-type(8) {
+        animation-delay: 0.8s;
+      }
+      .slide.active [data-delay="1"] {
+        animation-delay: 0.1s !important;
+      }
+      .slide.active [data-delay="2"] {
+        animation-delay: 0.2s !important;
+      }
+      .slide.active [data-delay="3"] {
+        animation-delay: 0.3s !important;
+      }
+      .slide.active [data-delay="4"] {
+        animation-delay: 0.4s !important;
+      }
+      .slide.active [data-delay="5"] {
+        animation-delay: 0.5s !important;
+      }
+      .slide.active [data-delay="6"] {
+        animation-delay: 0.6s !important;
+      }
+      .slide.active [data-delay="7"] {
+        animation-delay: 0.7s !important;
+      }
+      .slide.active [data-delay="8"] {
+        animation-delay: 0.8s !important;
+      }
+      .slide.active [data-delay="9"] {
+        animation-delay: 0.9s !important;
+      }
+      .slide.active [data-delay="10"] {
+        animation-delay: 1s !important;
+      }
 
-  .card{
-    border:1px solid var(--mw-line);
-    border-radius:14px;
-    padding:24px;
-    background:linear-gradient(180deg,rgba(91,110,255,0.03) 0%,rgba(91,110,255,0.01) 100%);
-    position:relative;
-    overflow:hidden;
-    transition:all 0.4s ease;
-  }
-  .card:hover{
-    border-color:var(--mw-line-2);
-    background:linear-gradient(180deg,rgba(91,110,255,0.06) 0%,rgba(91,110,255,0.02) 100%);
-    transform:translateY(-2px);
-  }
-  .card::before{
-    content:"";position:absolute;top:0;left:0;right:0;height:1px;
-    background:linear-gradient(90deg,transparent,rgba(91,110,255,0.4),transparent);
-  }
-  .card .k{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mw-muted);letter-spacing:.14em;text-transform:uppercase;font-weight:500}
-  .card .v{font-size:52px;font-weight:700;margin-top:10px;letter-spacing:-0.04em;line-height:1}
-  .card .v small{font-size:18px;color:var(--mw-muted);font-weight:400;margin-left:4px}
-  .card .d{color:var(--mw-ink-2);font-size:14px;margin-top:10px;line-height:1.5}
+      .card {
+        border: 1px solid var(--mw-line);
+        border-radius: 14px;
+        padding: 24px;
+        background: linear-gradient(
+          180deg,
+          rgba(91, 110, 255, 0.03) 0%,
+          rgba(91, 110, 255, 0.01) 100%
+        );
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s ease;
+      }
+      .card:hover {
+        border-color: var(--mw-line-2);
+        background: linear-gradient(
+          180deg,
+          rgba(91, 110, 255, 0.06) 0%,
+          rgba(91, 110, 255, 0.02) 100%
+        );
+        transform: translateY(-2px);
+      }
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(91, 110, 255, 0.4),
+          transparent
+        );
+      }
+      .card .k {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: var(--mw-muted);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+      .card .v {
+        font-size: 52px;
+        font-weight: 700;
+        margin-top: 10px;
+        letter-spacing: -0.04em;
+        line-height: 1;
+      }
+      .card .v small {
+        font-size: 18px;
+        color: var(--mw-muted);
+        font-weight: 400;
+        margin-left: 4px;
+      }
+      .card .d {
+        color: var(--mw-ink-2);
+        font-size: 14px;
+        margin-top: 10px;
+        line-height: 1.5;
+      }
 
-  .card.accent{
-    border-color:rgba(91,110,255,.35);
-    background:linear-gradient(180deg,rgba(91,110,255,0.08) 0%,rgba(91,110,255,0.02) 100%);
-  }
-  .card.accent::before{
-    background:var(--gradient-1);
-    height:2px;
-  }
+      .card.accent {
+        border-color: rgba(91, 110, 255, 0.35);
+        background: linear-gradient(
+          180deg,
+          rgba(91, 110, 255, 0.08) 0%,
+          rgba(91, 110, 255, 0.02) 100%
+        );
+      }
+      .card.accent::before {
+        background: var(--gradient-1);
+        height: 2px;
+      }
 
-  .terminal{
-    background:#06081A;
-    border:1px solid var(--mw-line);
-    border-radius:12px;
-    font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;
-    color:#CFD2E6;padding:20px;
-    position:relative;
-    overflow:hidden;
-  }
-  .terminal .head{
-    display:flex;gap:6px;margin-bottom:14px;align-items:center;
-  }
-  .terminal .head .dot{width:11px;height:11px;border-radius:50%}
-  .terminal .head .dot.r{background:#FB6E52}
-  .terminal .head .dot.y{background:#FBBF24}
-  .terminal .head .dot.g{background:#10D9A5}
-  .terminal .head .ttl{margin-left:14px;font-size:11px;color:var(--mw-muted);letter-spacing:.1em}
-  .terminal .p{color:var(--mw-green)}
-  .terminal .c{color:var(--mw-muted-2);font-style:italic}
-  .terminal .e{color:var(--mw-red)}
-  .terminal .ok{color:var(--mw-green)}
-  .terminal .y{color:var(--mw-amber)}
-  .terminal .w{color:#F2F4FF}
+      .terminal {
+        background: #06081a;
+        border: 1px solid var(--mw-line);
+        border-radius: 12px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.7;
+        color: #cfd2e6;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+      .terminal .head {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 14px;
+        align-items: center;
+      }
+      .terminal .head .dot {
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+      }
+      .terminal .head .dot.r {
+        background: #fb6e52;
+      }
+      .terminal .head .dot.y {
+        background: #fbbf24;
+      }
+      .terminal .head .dot.g {
+        background: #10d9a5;
+      }
+      .terminal .head .ttl {
+        margin-left: 14px;
+        font-size: 11px;
+        color: var(--mw-muted);
+        letter-spacing: 0.1em;
+      }
+      .terminal .p {
+        color: var(--mw-green);
+      }
+      .terminal .c {
+        color: var(--mw-muted-2);
+        font-style: italic;
+      }
+      .terminal .e {
+        color: var(--mw-red);
+      }
+      .terminal .ok {
+        color: var(--mw-green);
+      }
+      .terminal .y {
+        color: var(--mw-amber);
+      }
+      .terminal .w {
+        color: #f2f4ff;
+      }
 
-  .hero h1{font-size:128px;line-height:.9;font-weight:800;letter-spacing:-0.04em}
-  .hero .sub{font-size:22px;color:var(--mw-ink-2);max-width:780px;margin-top:28px;line-height:1.45}
-  .hero-meta{display:flex;gap:14px;margin-top:48px;align-items:center;flex-wrap:wrap}
-  .hero-glow{
-    position:absolute;width:800px;height:800px;
-    background:radial-gradient(circle, rgba(91,110,255,0.18) 0%, rgba(139,92,246,0.08) 35%, transparent 65%);
-    border-radius:50%;
-    right:-300px;bottom:-300px;
-    pointer-events:none;
-    animation:floatGlow 12s ease-in-out infinite;
-  }
-  @keyframes floatGlow{
-    0%,100%{transform:translate(0,0) scale(1)}
-    50%{transform:translate(-50px,-30px) scale(1.1)}
-  }
-  .strike{position:relative;display:inline-block}
-  .strike::after{
-    content:"";position:absolute;left:-6px;right:-6px;top:50%;height:8px;
-    background:var(--mw-red);transform:rotate(-2deg) scaleX(0);
-    transform-origin:left;
-    transition:transform 0.6s cubic-bezier(0.16,1,0.3,1);
-  }
-  .slide.active .strike::after{
-    transform:rotate(-2deg) scaleX(1);
-    transition-delay:1s;
-  }
+      .hero h1 {
+        font-size: 128px;
+        line-height: 0.9;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+      }
+      .hero .sub {
+        font-size: 22px;
+        color: var(--mw-ink-2);
+        max-width: 780px;
+        margin-top: 28px;
+        line-height: 1.45;
+      }
+      .hero-meta {
+        display: flex;
+        gap: 14px;
+        margin-top: 48px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .hero-glow {
+        position: absolute;
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(
+          circle,
+          rgba(91, 110, 255, 0.18) 0%,
+          rgba(139, 92, 246, 0.08) 35%,
+          transparent 65%
+        );
+        border-radius: 50%;
+        right: -300px;
+        bottom: -300px;
+        pointer-events: none;
+        animation: floatGlow 12s ease-in-out infinite;
+      }
+      @keyframes floatGlow {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(-50px, -30px) scale(1.1);
+        }
+      }
+      .strike {
+        position: relative;
+        display: inline-block;
+      }
+      .strike::after {
+        content: "";
+        position: absolute;
+        left: -6px;
+        right: -6px;
+        top: 50%;
+        height: 8px;
+        background: var(--mw-red);
+        transform: rotate(-2deg) scaleX(0);
+        transform-origin: left;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .slide.active .strike::after {
+        transform: rotate(-2deg) scaleX(1);
+        transition-delay: 1s;
+      }
 
-  .pager-mock{
-    position:absolute;right:64px;top:50%;transform:translateY(-50%);
-    width:380px;
-    border:1px solid var(--mw-line);
-    border-radius:20px;
-    background:linear-gradient(180deg,var(--mw-bg-3) 0%,var(--mw-bg-2) 100%);
-    padding:22px;
-    box-shadow:0 30px 80px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.04);
-    z-index:2;
-  }
-  .pager-mock .ph{display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mw-muted);letter-spacing:.1em}
-  .pager-mock .time{font-family:'JetBrains Mono',monospace;font-size:54px;color:var(--mw-ink);letter-spacing:-0.04em;margin-top:18px;font-weight:500}
-  .pager-mock .date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mw-muted);margin-top:-4px;letter-spacing:.06em}
-  .pager-mock .alert-card{margin-top:14px;padding:14px;border-radius:12px;opacity:0;transform:translateY(10px);transition:all 0.5s cubic-bezier(0.16,1,0.3,1)}
-  .slide.active .pager-mock .alert-card{opacity:1;transform:translateY(0)}
-  .slide.active .pager-mock .alert-card[data-delay="3"]{transition-delay:.8s}
-  .slide.active .pager-mock .alert-card[data-delay="4"]{transition-delay:1.0s}
-  .slide.active .pager-mock .alert-card[data-delay="5"]{transition-delay:1.2s}
-  .pager-mock .alert-card.crit{border:1px solid rgba(251,110,82,.35);background:rgba(251,110,82,.08)}
-  .pager-mock .alert-card.warn{border:1px solid rgba(251,191,36,.3);background:rgba(251,191,36,.06)}
-  .pager-mock .sev{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;display:flex;align-items:center;gap:6px}
-  .pager-mock .crit .sev{color:var(--mw-red)}
-  .pager-mock .warn .sev{color:var(--mw-amber)}
-  .pager-mock .crit .sev::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--mw-red);box-shadow:0 0 8px var(--mw-red);animation:pulse 1.5s ease-in-out infinite}
-  .pager-mock .warn .sev::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--mw-amber);box-shadow:0 0 8px var(--mw-amber)}
-  .pager-mock .msg{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--mw-ink);margin-top:8px;line-height:1.5}
-  .pager-mock .sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mw-muted);margin-top:8px}
+      .pager-mock {
+        position: absolute;
+        right: 64px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 380px;
+        border: 1px solid var(--mw-line);
+        border-radius: 20px;
+        background: linear-gradient(
+          180deg,
+          var(--mw-bg-3) 0%,
+          var(--mw-bg-2) 100%
+        );
+        padding: 22px;
+        box-shadow:
+          0 30px 80px rgba(0, 0, 0, 0.6),
+          inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        z-index: 2;
+      }
+      .pager-mock .ph {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: var(--mw-muted);
+        letter-spacing: 0.1em;
+      }
+      .pager-mock .time {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 54px;
+        color: var(--mw-ink);
+        letter-spacing: -0.04em;
+        margin-top: 18px;
+        font-weight: 500;
+      }
+      .pager-mock .date {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: var(--mw-muted);
+        margin-top: -4px;
+        letter-spacing: 0.06em;
+      }
+      .pager-mock .alert-card {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 12px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .slide.active .pager-mock .alert-card {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .slide.active .pager-mock .alert-card[data-delay="3"] {
+        transition-delay: 0.8s;
+      }
+      .slide.active .pager-mock .alert-card[data-delay="4"] {
+        transition-delay: 1s;
+      }
+      .slide.active .pager-mock .alert-card[data-delay="5"] {
+        transition-delay: 1.2s;
+      }
+      .pager-mock .alert-card.crit {
+        border: 1px solid rgba(251, 110, 82, 0.35);
+        background: rgba(251, 110, 82, 0.08);
+      }
+      .pager-mock .alert-card.warn {
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        background: rgba(251, 191, 36, 0.06);
+      }
+      .pager-mock .sev {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .pager-mock .crit .sev {
+        color: var(--mw-red);
+      }
+      .pager-mock .warn .sev {
+        color: var(--mw-amber);
+      }
+      .pager-mock .crit .sev::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--mw-red);
+        box-shadow: 0 0 8px var(--mw-red);
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+      .pager-mock .warn .sev::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--mw-amber);
+        box-shadow: 0 0 8px var(--mw-amber);
+      }
+      .pager-mock .msg {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: var(--mw-ink);
+        margin-top: 8px;
+        line-height: 1.5;
+      }
+      .pager-mock .sub {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: var(--mw-muted);
+        margin-top: 8px;
+      }
 
-  .flow{display:flex;align-items:stretch;gap:12px;margin-top:24px}
-  .flow .step{
-    flex:1;border:1px solid var(--mw-line);border-radius:12px;padding:20px;
-    background:linear-gradient(180deg,rgba(91,110,255,0.03) 0%,transparent 100%);
-    position:relative;transition:all 0.4s ease;
-  }
-  .flow .step:hover{
-    border-color:var(--mw-blue);
-    background:linear-gradient(180deg,rgba(91,110,255,0.08) 0%,rgba(91,110,255,0.01) 100%);
-    transform:translateY(-3px);
-  }
-  .flow .step .n{
-    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mw-blue);letter-spacing:.16em;font-weight:600;
-    display:inline-flex;align-items:center;gap:8px;
-  }
-  .flow .step .n .dot{width:6px;height:6px;border-radius:50%;background:var(--mw-blue);box-shadow:0 0 8px var(--mw-blue)}
-  .flow .step .t{font-size:20px;font-weight:600;margin-top:10px;line-height:1.2}
-  .flow .step .b{font-size:12.5px;color:var(--mw-ink-2);margin-top:10px;line-height:1.5}
-  .flow .arrow{
-    display:flex;align-items:center;color:var(--mw-blue);font-size:18px;
-    animation:arrowPulse 2s ease-in-out infinite;
-  }
-  @keyframes arrowPulse{
-    0%,100%{opacity:.5;transform:translateX(0)}
-    50%{opacity:1;transform:translateX(3px)}
-  }
+      .flow {
+        display: flex;
+        align-items: stretch;
+        gap: 12px;
+        margin-top: 24px;
+      }
+      .flow .step {
+        flex: 1;
+        border: 1px solid var(--mw-line);
+        border-radius: 12px;
+        padding: 20px;
+        background: linear-gradient(
+          180deg,
+          rgba(91, 110, 255, 0.03) 0%,
+          transparent 100%
+        );
+        position: relative;
+        transition: all 0.4s ease;
+      }
+      .flow .step:hover {
+        border-color: var(--mw-blue);
+        background: linear-gradient(
+          180deg,
+          rgba(91, 110, 255, 0.08) 0%,
+          rgba(91, 110, 255, 0.01) 100%
+        );
+        transform: translateY(-3px);
+      }
+      .flow .step .n {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: var(--mw-blue);
+        letter-spacing: 0.16em;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .flow .step .n .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--mw-blue);
+        box-shadow: 0 0 8px var(--mw-blue);
+      }
+      .flow .step .t {
+        font-size: 20px;
+        font-weight: 600;
+        margin-top: 10px;
+        line-height: 1.2;
+      }
+      .flow .step .b {
+        font-size: 12.5px;
+        color: var(--mw-ink-2);
+        margin-top: 10px;
+        line-height: 1.5;
+      }
+      .flow .arrow {
+        display: flex;
+        align-items: center;
+        color: var(--mw-blue);
+        font-size: 18px;
+        animation: arrowPulse 2s ease-in-out infinite;
+      }
+      @keyframes arrowPulse {
+        0%,
+        100% {
+          opacity: 0.5;
+          transform: translateX(0);
+        }
+        50% {
+          opacity: 1;
+          transform: translateX(3px);
+        }
+      }
 
-  .stack-diagram{display:flex;flex-direction:column;gap:6px;width:100%}
-  .stack-diagram .layer{
-    border:1px solid var(--mw-line);
-    border-radius:10px;
-    padding:14px 18px;
-    background:linear-gradient(90deg,rgba(91,110,255,0.03),transparent);
-    display:flex;justify-content:space-between;align-items:center;
-    transition:all 0.3s ease;
-  }
-  .stack-diagram .layer:hover{
-    border-color:var(--mw-blue);
-    background:linear-gradient(90deg,rgba(91,110,255,0.08),transparent);
-  }
-  .stack-diagram .layer .name{font-weight:500;font-size:16px}
-  .stack-diagram .layer .src{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mw-muted);letter-spacing:.12em}
-  .stack-diagram .layer.brain{
-    border:1px solid var(--mw-blue);
-    background:linear-gradient(90deg,rgba(91,110,255,0.15),rgba(139,92,246,0.05));
-    box-shadow:0 0 24px rgba(91,110,255,0.2);
-  }
-  .stack-diagram .layer.brain .name{color:var(--mw-blue);font-weight:600}
+      .stack-diagram {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+      }
+      .stack-diagram .layer {
+        border: 1px solid var(--mw-line);
+        border-radius: 10px;
+        padding: 14px 18px;
+        background: linear-gradient(
+          90deg,
+          rgba(91, 110, 255, 0.03),
+          transparent
+        );
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+      }
+      .stack-diagram .layer:hover {
+        border-color: var(--mw-blue);
+        background: linear-gradient(
+          90deg,
+          rgba(91, 110, 255, 0.08),
+          transparent
+        );
+      }
+      .stack-diagram .layer .name {
+        font-weight: 500;
+        font-size: 16px;
+      }
+      .stack-diagram .layer .src {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: var(--mw-muted);
+        letter-spacing: 0.12em;
+      }
+      .stack-diagram .layer.brain {
+        border: 1px solid var(--mw-blue);
+        background: linear-gradient(
+          90deg,
+          rgba(91, 110, 255, 0.15),
+          rgba(139, 92, 246, 0.05)
+        );
+        box-shadow: 0 0 24px rgba(91, 110, 255, 0.2);
+      }
+      .stack-diagram .layer.brain .name {
+        color: var(--mw-blue);
+        font-weight: 600;
+      }
 
-  .diff{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
-  .diff .pane{border:1px solid var(--mw-line);border-radius:12px;overflow:hidden;background:#06081A}
-  .diff .pane .head{
-    padding:10px 16px;border-bottom:1px solid var(--mw-line);
-    font-family:'JetBrains Mono',monospace;font-size:10px;
-    letter-spacing:.14em;text-transform:uppercase;color:var(--mw-muted);
-    display:flex;align-items:center;gap:8px;
-  }
-  .diff .pane .head .filebadge{margin-left:auto;color:var(--mw-muted-2)}
-  .diff .pane.bad .head{color:var(--mw-red)}
-  .diff .pane.good .head{color:var(--mw-green)}
-  .diff .pane pre{margin:0;padding:16px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.7;color:#CFD2E6;white-space:pre-wrap;word-break:break-word}
-  .diff .minus{color:var(--mw-red);background:rgba(251,110,82,.08);display:block;padding:0 4px}
-  .diff .plus{color:var(--mw-green);background:rgba(16,217,165,.08);display:block;padding:0 4px}
+      .diff {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-top: 24px;
+      }
+      .diff .pane {
+        border: 1px solid var(--mw-line);
+        border-radius: 12px;
+        overflow: hidden;
+        background: #06081a;
+      }
+      .diff .pane .head {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--mw-line);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--mw-muted);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .diff .pane .head .filebadge {
+        margin-left: auto;
+        color: var(--mw-muted-2);
+      }
+      .diff .pane.bad .head {
+        color: var(--mw-red);
+      }
+      .diff .pane.good .head {
+        color: var(--mw-green);
+      }
+      .diff .pane pre {
+        margin: 0;
+        padding: 16px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11.5px;
+        line-height: 1.7;
+        color: #cfd2e6;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .diff .minus {
+        color: var(--mw-red);
+        background: rgba(251, 110, 82, 0.08);
+        display: block;
+        padding: 0 4px;
+      }
+      .diff .plus {
+        color: var(--mw-green);
+        background: rgba(16, 217, 165, 0.08);
+        display: block;
+        padding: 0 4px;
+      }
 
-  ul.dot-list{list-style:none;padding:0;margin:24px 0 0}
-  ul.dot-list li{
-    padding-left:32px;position:relative;
-    font-size:18px;line-height:1.45;margin-bottom:16px;color:var(--mw-ink);
-  }
-  ul.dot-list li::before{
-    content:"";position:absolute;left:0;top:8px;
-    width:12px;height:12px;
-    background:var(--gradient-2);transform:rotate(45deg);
-    box-shadow:0 0 12px var(--mw-glow);
-  }
-  ul.dot-list li small{color:var(--mw-muted);font-size:14px;display:block;margin-top:4px}
+      ul.dot-list {
+        list-style: none;
+        padding: 0;
+        margin: 24px 0 0;
+      }
+      ul.dot-list li {
+        padding-left: 32px;
+        position: relative;
+        font-size: 18px;
+        line-height: 1.45;
+        margin-bottom: 16px;
+        color: var(--mw-ink);
+      }
+      ul.dot-list li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        width: 12px;
+        height: 12px;
+        background: var(--gradient-2);
+        transform: rotate(45deg);
+        box-shadow: 0 0 12px var(--mw-glow);
+      }
+      ul.dot-list li small {
+        color: var(--mw-muted);
+        font-size: 14px;
+        display: block;
+        margin-top: 4px;
+      }
 
-  .quote-wrap{position:relative;max-width:1000px}
-  .quote-mark{
-    position:absolute;left:-40px;top:-60px;
-    font-family:'Instrument Serif',serif;
-    font-size:200px;line-height:1;
-    background:var(--gradient-1);
-    -webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;
-    opacity:.4;
-  }
-  .quote-text{
-    font-family:'Instrument Serif',serif;font-style:italic;
-    font-size:60px;line-height:1.15;letter-spacing:-0.02em;color:var(--mw-ink);
-    font-weight:400;
-  }
-  .quote-attr{
-    margin-top:32px;font-family:'JetBrains Mono',monospace;font-size:11px;
-    color:var(--mw-muted);letter-spacing:.18em;text-transform:uppercase;
-    display:flex;align-items:center;gap:14px;
-  }
-  .quote-attr::before{content:"";width:30px;height:1px;background:var(--mw-blue)}
+      .quote-wrap {
+        position: relative;
+        max-width: 1000px;
+      }
+      .quote-mark {
+        position: absolute;
+        left: -40px;
+        top: -60px;
+        font-family: "Instrument Serif", serif;
+        font-size: 200px;
+        line-height: 1;
+        background: var(--gradient-1);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        opacity: 0.4;
+      }
+      .quote-text {
+        font-family: "Instrument Serif", serif;
+        font-style: italic;
+        font-size: 60px;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        color: var(--mw-ink);
+        font-weight: 400;
+      }
+      .quote-attr {
+        margin-top: 32px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: var(--mw-muted);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .quote-attr::before {
+        content: "";
+        width: 30px;
+        height: 1px;
+        background: var(--mw-blue);
+      }
 
-  .demo-frame{
-    flex:1;border:1px dashed rgba(91,110,255,.25);border-radius:14px;
-    display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;
-    background:
-      linear-gradient(135deg,rgba(91,110,255,0.04) 0%,rgba(139,92,246,0.02) 100%),
-      repeating-linear-gradient(45deg,transparent 0 14px,rgba(91,110,255,.012) 14px 28px);
-    margin-top:24px;min-height:180px;
-    position:relative;
-  }
-  .demo-frame::before{
-    content:"";position:absolute;inset:14px;border:1px solid rgba(91,110,255,.08);border-radius:8px;
-  }
-  .demo-frame .label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mw-blue);letter-spacing:.18em;text-transform:uppercase;font-weight:600}
-  .demo-frame .title{font-size:36px;font-weight:600;color:var(--mw-ink);letter-spacing:-0.02em}
+      .demo-frame {
+        flex: 1;
+        border: 1px dashed rgba(91, 110, 255, 0.25);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 14px;
+        background:
+          linear-gradient(
+            135deg,
+            rgba(91, 110, 255, 0.04) 0%,
+            rgba(139, 92, 246, 0.02) 100%
+          ),
+          repeating-linear-gradient(
+            45deg,
+            transparent 0 14px,
+            rgba(91, 110, 255, 0.012) 14px 28px
+          );
+        margin-top: 24px;
+        min-height: 180px;
+        position: relative;
+      }
+      .demo-frame::before {
+        content: "";
+        position: absolute;
+        inset: 14px;
+        border: 1px solid rgba(91, 110, 255, 0.08);
+        border-radius: 8px;
+      }
+      .demo-frame .label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: var(--mw-blue);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+      .demo-frame .title {
+        font-size: 36px;
+        font-weight: 600;
+        color: var(--mw-ink);
+        letter-spacing: -0.02em;
+      }
 
-  .source-grid{
-    display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:32px;
-  }
-  .source-card{
-    border:1px solid var(--mw-line);border-radius:14px;padding:20px;
-    background:linear-gradient(180deg,rgba(91,110,255,0.04) 0%,transparent 100%);
-    transition:all 0.4s ease;position:relative;overflow:hidden;
-  }
-  .source-card:hover{transform:translateY(-4px);border-color:var(--mw-blue);box-shadow:0 12px 32px rgba(91,110,255,0.15)}
-  .source-card .icon{
-    width:42px;height:42px;border-radius:10px;
-    background:linear-gradient(135deg,rgba(91,110,255,0.15),rgba(139,92,246,0.08));
-    border:1px solid rgba(91,110,255,.2);
-    display:flex;align-items:center;justify-content:center;
-    margin-bottom:14px;
-    color:var(--mw-blue);
-  }
-  .source-card .lbl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mw-muted);letter-spacing:.12em;text-transform:uppercase;font-weight:500}
-  .source-card .ttl{font-size:18px;font-weight:600;margin-top:4px;letter-spacing:-0.01em}
-  .source-card .desc{font-size:13px;color:var(--mw-ink-2);margin-top:8px;line-height:1.5}
+      .source-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-top: 32px;
+      }
+      .source-card {
+        border: 1px solid var(--mw-line);
+        border-radius: 14px;
+        padding: 20px;
+        background: linear-gradient(
+          180deg,
+          rgba(91, 110, 255, 0.04) 0%,
+          transparent 100%
+        );
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      .source-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--mw-blue);
+        box-shadow: 0 12px 32px rgba(91, 110, 255, 0.15);
+      }
+      .source-card .icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        background: linear-gradient(
+          135deg,
+          rgba(91, 110, 255, 0.15),
+          rgba(139, 92, 246, 0.08)
+        );
+        border: 1px solid rgba(91, 110, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 14px;
+        color: var(--mw-blue);
+      }
+      .source-card .lbl {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: var(--mw-muted);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+      .source-card .ttl {
+        font-size: 18px;
+        font-weight: 600;
+        margin-top: 4px;
+        letter-spacing: -0.01em;
+      }
+      .source-card .desc {
+        font-size: 13px;
+        color: var(--mw-ink-2);
+        margin-top: 8px;
+        line-height: 1.5;
+      }
 
-  .dist-chart{display:flex;flex-direction:column;gap:14px;margin-top:32px}
-  .dist-bar{display:flex;align-items:center;gap:18px}
-  .dist-bar .lbl{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mw-muted);letter-spacing:.08em;width:170px;text-transform:uppercase;flex-shrink:0}
-  .dist-bar .track{flex:1;height:32px;background:rgba(91,110,255,0.04);border-radius:8px;overflow:hidden;border:1px solid var(--mw-line);position:relative}
-  .dist-bar .fill{
-    height:100%;background:var(--gradient-1);border-radius:8px;
-    transform:scaleX(0);transform-origin:left;
-    transition:transform 1.2s cubic-bezier(0.16,1,0.3,1);
-  }
-  .slide.active .dist-bar .fill{transform:scaleX(var(--w,1));transition-delay:.5s}
-  .dist-bar .val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;color:var(--mw-ink);width:80px;text-align:right}
+      .dist-chart {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        margin-top: 32px;
+      }
+      .dist-bar {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .dist-bar .lbl {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: var(--mw-muted);
+        letter-spacing: 0.08em;
+        width: 170px;
+        text-transform: uppercase;
+        flex-shrink: 0;
+      }
+      .dist-bar .track {
+        flex: 1;
+        height: 32px;
+        background: rgba(91, 110, 255, 0.04);
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--mw-line);
+        position: relative;
+      }
+      .dist-bar .fill {
+        height: 100%;
+        background: var(--gradient-1);
+        border-radius: 8px;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .slide.active .dist-bar .fill {
+        transform: scaleX(var(--w, 1));
+        transition-delay: 0.5s;
+      }
+      .dist-bar .val {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--mw-ink);
+        width: 80px;
+        text-align: right;
+      }
 
-  .nav-bar{
-    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-    z-index:100;
-    display:flex;align-items:center;gap:14px;
-    padding:10px 16px;
-    background:rgba(15,20,38,0.85);
-    backdrop-filter:blur(20px);
-    border:1px solid var(--mw-line);
-    border-radius:999px;
-    box-shadow:0 12px 40px rgba(0,0,0,.5);
-  }
-  .nav-btn{
-    width:36px;height:36px;border-radius:50%;
-    border:1px solid var(--mw-line);
-    background:rgba(91,110,255,0.04);
-    color:var(--mw-ink-2);cursor:pointer;
-    display:flex;align-items:center;justify-content:center;
-    transition:all 0.2s ease;font-size:18px;
-  }
-  .nav-btn:hover{border-color:var(--mw-blue);background:rgba(91,110,255,0.12);color:var(--mw-blue)}
-  .nav-btn:disabled{opacity:.3;cursor:not-allowed}
-  .nav-counter{
-    font-family:'JetBrains Mono',monospace;font-size:12px;
-    color:var(--mw-ink-2);letter-spacing:.1em;min-width:80px;text-align:center;
-  }
-  .nav-counter .now{color:var(--mw-blue);font-weight:600}
+      .nav-bar {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 10px 16px;
+        background: rgba(15, 20, 38, 0.85);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--mw-line);
+        border-radius: 999px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+      }
+      .nav-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid var(--mw-line);
+        background: rgba(91, 110, 255, 0.04);
+        color: var(--mw-ink-2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        font-size: 18px;
+      }
+      .nav-btn:hover {
+        border-color: var(--mw-blue);
+        background: rgba(91, 110, 255, 0.12);
+        color: var(--mw-blue);
+      }
+      .nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+      .nav-counter {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: var(--mw-ink-2);
+        letter-spacing: 0.1em;
+        min-width: 80px;
+        text-align: center;
+      }
+      .nav-counter .now {
+        color: var(--mw-blue);
+        font-weight: 600;
+      }
 
-  .progress{
-    position:fixed;top:0;left:0;right:0;height:3px;z-index:100;
-    background:rgba(91,110,255,0.05);
-  }
-  .progress .bar{
-    height:100%;background:var(--gradient-1);
-    transition:width 0.5s cubic-bezier(0.16,1,0.3,1);
-    box-shadow:0 0 12px var(--mw-glow);
-  }
+      .progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        z-index: 100;
+        background: rgba(91, 110, 255, 0.05);
+      }
+      .progress .bar {
+        height: 100%;
+        background: var(--gradient-1);
+        transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 0 12px var(--mw-glow);
+      }
 
-  .kbd-hint{
-    position:fixed;bottom:24px;right:24px;z-index:99;
-    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mw-muted);letter-spacing:.12em;
-    display:flex;align-items:center;gap:8px;opacity:.6;
-    pointer-events:none;
-  }
-  .kbd{
-    display:inline-block;padding:2px 8px;border:1px solid var(--mw-line);border-radius:4px;
-    background:rgba(91,110,255,0.04);font-weight:600;
-  }
+      .kbd-hint {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 99;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: var(--mw-muted);
+        letter-spacing: 0.12em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        opacity: 0.6;
+        pointer-events: none;
+      }
+      .kbd {
+        display: inline-block;
+        padding: 2px 8px;
+        border: 1px solid var(--mw-line);
+        border-radius: 4px;
+        background: rgba(91, 110, 255, 0.04);
+        font-weight: 600;
+      }
 
-  .fs-btn{
-    position:fixed;top:24px;right:24px;z-index:99;
-    width:36px;height:36px;border-radius:8px;
-    border:1px solid var(--mw-line);
-    background:rgba(15,20,38,0.6);backdrop-filter:blur(12px);
-    color:var(--mw-ink-2);cursor:pointer;
-    display:flex;align-items:center;justify-content:center;
-    transition:all 0.2s ease;
-  }
-  .fs-btn:hover{border-color:var(--mw-blue);color:var(--mw-blue)}
-  .fs-btn svg{width:16px;height:16px}
+      .fs-btn {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 99;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid var(--mw-line);
+        background: rgba(15, 20, 38, 0.6);
+        backdrop-filter: blur(12px);
+        color: var(--mw-ink-2);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+      .fs-btn:hover {
+        border-color: var(--mw-blue);
+        color: var(--mw-blue);
+      }
+      .fs-btn svg {
+        width: 16px;
+        height: 16px;
+      }
 
-  .end-h{font-size:180px;letter-spacing:-0.05em;line-height:.9;font-weight:800}
+      .end-h {
+        font-size: 180px;
+        letter-spacing: -0.05em;
+        line-height: 0.9;
+        font-weight: 800;
+      }
 
-  .center{justify-content:center;align-items:flex-start}
-  .center-all{justify-content:center;align-items:center;text-align:center}
+      .center {
+        justify-content: center;
+        align-items: flex-start;
+      }
+      .center-all {
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
 
-  .mw-wordmark{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:-0.02em}
-  .mw-wordmark .mark{
-    width:28px;height:28px;border-radius:7px;
-    background:var(--gradient-1);
-    display:flex;align-items:center;justify-content:center;
-    color:white;font-weight:800;font-size:16px;
-    box-shadow:0 0 20px var(--mw-glow);
-  }
-</style>
-</head>
-<body>
+      .mw-wordmark {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        font-size: 18px;
+        letter-spacing: -0.02em;
+      }
+      .mw-wordmark .mark {
+        width: 28px;
+        height: 28px;
+        border-radius: 7px;
+        background: var(--gradient-1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 800;
+        font-size: 16px;
+        box-shadow: 0 0 20px var(--mw-glow);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress"><div class="bar" id="progressBar"></div></div>
 
-<div class="progress"><div class="bar" id="progressBar"></div></div>
+    <div class="stage">
+      <div class="slides-wrap" id="deck">
+        <!-- ============ SLIDE 1 — TITLE ============ -->
+        <section class="slide hero" data-slide="1">
+          <div class="brand">
+            <span class="mw-mark">M</span> MIDDLEWARE · WEBINAR · 2026
+          </div>
+          <div class="meta"><span class="dot"></span><span>LIVE</span></div>
+          <div class="hero-glow"></div>
+          <div class="pad center">
+            <div class="kicker reveal">The Future of Fixes</div>
+            <h1 class="reveal">
+              Automating <span class="strike">on-call.</span><br /><span
+                class="grad"
+                >issue resolution.</span
+              >
+            </h1>
+            <div class="sub reveal">
+              An hour on what changes when an SRE agent doesn't just page you.
+              It opens the pull request, ships the diff, and lets you sleep
+              through the alert.
+            </div>
+            <div class="hero-meta reveal">
+              <span class="tag">60 MIN</span>
+              <span class="tag">TALK + LIVE DEMO</span>
+              <span class="tag glow">⚡ OPSAI</span>
+            </div>
+          </div>
+          <div class="pageno">01</div>
+          <div class="foot-tick">middleware.io/product/ops-ai</div>
+        </section>
 
-<div class="stage">
-  <div class="slides-wrap" id="deck">
+        <!-- ============ SLIDE 2 — SPEAKER ============ -->
+        <section class="slide" data-slide="2">
+          <div class="brand">
+            <span class="mw-mark">M</span> MIDDLEWARE · WEBINAR · 2026
+          </div>
+          <div class="meta"><span class="dot"></span><span>HELLO</span></div>
+          <div class="pad center">
+            <div class="kicker reveal">Your host for the next hour</div>
+            <h1 class="reveal" style="font-size: 128px">
+              Archish <span class="serif grad">Thakkar</span>
+            </h1>
+            <p class="lede reveal" style="margin-top: 24px; font-size: 26px">
+              Software Engineer <span class="muted">@</span>
+              <span class="blue">middleware.io</span>
+            </p>
+            <div
+              class="row reveal"
+              style="margin-top: 48px; gap: 14px; flex-wrap: wrap"
+            >
+              <span class="tag">Koffee Coder</span>
+              <span class="tag">Observability nerd</span>
+              <span class="tag">Owns more pagers than he'd like</span>
+            </div>
+            <p
+              class="lede muted reveal"
+              style="margin-top: 48px; max-width: 760px; font-size: 18px"
+            >
+              I work on the team that built the thing we're going to talk about.
+              That means I'll be honest about what it does well and where it
+              still trips. Push back. Ask the awkward questions.
+            </p>
+          </div>
+          <div class="pageno">02</div>
+        </section>
 
-<!-- ============ SLIDE 1 — TITLE ============ -->
-<section class="slide hero" data-slide="1">
-  <div class="brand"><span class="mw-mark">M</span> MIDDLEWARE · WEBINAR · 2026</div>
-  <div class="meta"><span class="dot"></span><span>LIVE</span></div>
-  <div class="hero-glow"></div>
-  <div class="pad center">
-    <div class="kicker reveal">The Future of Fixes</div>
-    <h1 class="reveal">Automating <span class="strike">on-call.</span><br/><span class="grad">issue resolution.</span></h1>
-    <div class="sub reveal">An hour on what changes when an SRE agent doesn't just page you. It opens the pull request, ships the diff, and lets you sleep through the alert.</div>
-    <div class="hero-meta reveal">
-      <span class="tag">60 MIN</span>
-      <span class="tag">TALK + LIVE DEMO</span>
-      <span class="tag glow">⚡ OPSAI</span>
-    </div>
-  </div>
-  <div class="pageno">01</div>
-  <div class="foot-tick">middleware.io/product/ops-ai</div>
-</section>
+        <!-- ============ SLIDE 3 — PAGER ============ -->
+        <section class="slide" data-slide="3">
+          <div class="brand">
+            <span class="mw-mark">M</span> 01 · THE PROBLEM
+          </div>
+          <div class="meta">
+            <span class="dot alert"></span><span>03:14 AM</span>
+          </div>
+          <div class="pad" style="justify-content: center; max-width: 640px">
+            <div class="kicker reveal">A familiar story</div>
+            <h2 class="reveal">
+              You know this <br /><span class="serif grad">notification.</span>
+            </h2>
+            <p class="lede reveal" style="margin-top: 28px">
+              A pager fires. You stumble to a laptop. You open six tabs. You
+              context-switch between dashboards, logs, and a runbook from last
+              quarter nobody updated. Forty-five minutes later you find a
+              one-line typo.
+            </p>
+          </div>
+          <div class="pager-mock">
+            <div class="ph"><span>● PAGERDUTY</span><span>NOW</span></div>
+            <div class="time">03:14</div>
+            <div class="date">TUE · MAY 14</div>
+            <div class="alert-card crit" data-delay="3">
+              <div class="sev">P1 · CRITICAL</div>
+              <div class="msg">
+                [python-demo] 500s on /user/&lt;name&gt; · err &gt; 5%
+              </div>
+              <div class="sub">rule 144047 · 1m window · trace ↑</div>
+            </div>
+            <div class="alert-card warn" data-delay="4">
+              <div class="sev">P2 · WARNING</div>
+              <div class="msg">[k8s] mw-kube-agent · CrashLoopBackOff</div>
+              <div class="sub">restarts: 2,847 · ns: mw-agent-ns</div>
+            </div>
+            <div class="alert-card crit" data-delay="5">
+              <div class="sev">P1 · CRITICAL</div>
+              <div class="msg">[checkout] latency p95 &gt; 4.2s</div>
+              <div class="sub">15 min sustained · revenue impact</div>
+            </div>
+          </div>
+          <div class="pageno">03</div>
+          <div class="foot-tick">~60% of engineer time goes to root cause</div>
+        </section>
 
-<!-- ============ SLIDE 2 — SPEAKER ============ -->
-<section class="slide" data-slide="2">
-  <div class="brand"><span class="mw-mark">M</span> MIDDLEWARE · WEBINAR · 2026</div>
-  <div class="meta"><span class="dot"></span><span>HELLO</span></div>
-  <div class="pad center">
-    <div class="kicker reveal">Your host for the next hour</div>
-    <h1 class="reveal" style="font-size:128px">Archish <span class="serif grad">Thakkar</span></h1>
-    <p class="lede reveal" style="margin-top:24px;font-size:26px">Software Engineer <span class="muted">@</span> <span class="blue">middleware.io</span></p>
-    <div class="row reveal" style="margin-top:48px;gap:14px;flex-wrap:wrap">
-      <span class="tag">Koffee Coder</span>
-      <span class="tag">Observability nerd</span>
-      <span class="tag">Owns more pagers than he'd like</span>
-    </div>
-    <p class="lede muted reveal" style="margin-top:48px;max-width:760px;font-size:18px">I work on the team that built the thing we're going to talk about. That means I'll be honest about what it does well and where it still trips. Push back. Ask the awkward questions.</p>
-  </div>
-  <div class="pageno">02</div>
-</section>
+        <!-- ============ SLIDE 4 — NUMBERS ============ -->
+        <section class="slide" data-slide="4">
+          <div class="brand">
+            <span class="mw-mark">M</span> 01 · THE PROBLEM
+          </div>
+          <div class="meta">
+            <span class="dot alert"></span><span>SIGNAL</span>
+          </div>
+          <div class="pad">
+            <div class="kicker reveal">
+              What the industry is actually paying for
+            </div>
+            <h2 class="reveal">
+              Observability got <span class="serif grad">prettier.</span
+              ><br />On-call got <span class="red">heavier.</span>
+            </h2>
+            <div class="grid-3" style="margin-top: 56px">
+              <div class="card reveal" data-delay="3">
+                <div class="k">Engineer time on RCA</div>
+                <div class="v">
+                  <span class="grad">60</span><small>%</small>
+                </div>
+                <div class="d">
+                  Up to six in ten hours hunting cause, not fixing it. The
+                  dashboard told them something broke. Nothing told them why.
+                </div>
+              </div>
+              <div class="card reveal" data-delay="4">
+                <div class="k">Real customer noise</div>
+                <div class="v">
+                  <span class="grad">1,073</span><small>fires</small>
+                </div>
+                <div class="d">
+                  One misconfigured CPU monitor. Seven days. Zero resolutions.
+                  Signal drowned in the channel meant to surface it.
+                </div>
+              </div>
+              <div class="card reveal" data-delay="5">
+                <div class="k">Tools in a single P1</div>
+                <div class="v"><span class="grad">5–6</span></div>
+                <div class="d">
+                  PagerDuty, Datadog, Loki, GitHub, Slack, a wiki from 2024.
+                  Every tab switch costs minutes. Every minute costs revenue.
+                </div>
+              </div>
+            </div>
+            <p
+              class="muted reveal mono"
+              style="
+                margin-top: 32px;
+                font-size: 11px;
+                letter-spacing: 0.1em;
+                border-top: 1px solid var(--mw-line);
+                padding-top: 20px;
+              "
+            >
+              SOURCE · MIDDLEWARE BENCHMARK + CUSTOMER OBSERVATION DATA · 2026
+            </p>
+          </div>
+          <div class="pageno">04</div>
+        </section>
 
-<!-- ============ SLIDE 3 — PAGER ============ -->
-<section class="slide" data-slide="3">
-  <div class="brand"><span class="mw-mark">M</span> 01 · THE PROBLEM</div>
-  <div class="meta"><span class="dot alert"></span><span>03:14 AM</span></div>
-  <div class="pad" style="justify-content:center;max-width:640px">
-    <div class="kicker reveal">A familiar story</div>
-    <h2 class="reveal">You know this <br/><span class="serif grad">notification.</span></h2>
-    <p class="lede reveal" style="margin-top:28px">A pager fires. You stumble to a laptop. You open six tabs. You context-switch between dashboards, logs, and a runbook from last quarter nobody updated. Forty-five minutes later you find a one-line typo.</p>
-  </div>
-  <div class="pager-mock">
-    <div class="ph"><span>● PAGERDUTY</span><span>NOW</span></div>
-    <div class="time">03:14</div>
-    <div class="date">TUE · MAY 14</div>
-    <div class="alert-card crit" data-delay="3">
-      <div class="sev">P1 · CRITICAL</div>
-      <div class="msg">[python-demo] 500s on /user/&lt;name&gt; · err &gt; 5%</div>
-      <div class="sub">rule 144047 · 1m window · trace ↑</div>
-    </div>
-    <div class="alert-card warn" data-delay="4">
-      <div class="sev">P2 · WARNING</div>
-      <div class="msg">[k8s] mw-kube-agent · CrashLoopBackOff</div>
-      <div class="sub">restarts: 2,847 · ns: mw-agent-ns</div>
-    </div>
-    <div class="alert-card crit" data-delay="5">
-      <div class="sev">P1 · CRITICAL</div>
-      <div class="msg">[checkout] latency p95 &gt; 4.2s</div>
-      <div class="sub">15 min sustained · revenue impact</div>
-    </div>
-  </div>
-  <div class="pageno">03</div>
-  <div class="foot-tick">~60% of engineer time goes to root cause</div>
-</section>
+        <!-- ============ SLIDE 5 — AI WORSE ============ -->
+        <section class="slide" data-slide="5">
+          <div class="brand">
+            <span class="mw-mark">M</span> 01 · THE PROBLEM
+          </div>
+          <div class="meta">
+            <span class="dot alert"></span><span>03:14 AM</span>
+          </div>
+          <div class="pad">
+            <div class="kicker reveal">The plot twist nobody asked for</div>
+            <h2 class="reveal">
+              AI <span class="serif grad">writes</span> the bug.<br />You ship
+              it. You debug it. <span class="red">At 3 AM.</span>
+            </h2>
+            <p class="lede reveal" style="margin-top: 36px; max-width: 960px">
+              Copilot. Cursor. In-house LLMs. Your team ships more code than
+              ever. Tests pass. Review passes. Production catches the edge case
+              nobody wrote a test for. Somebody has to find it. Today, that
+              somebody is a human with a laptop and a coffee.
+            </p>
+            <div
+              class="terminal reveal"
+              style="margin-top: 32px; max-width: 880px"
+            >
+              <div class="head">
+                <div class="dot r"></div>
+                <div class="dot y"></div>
+                <div class="dot g"></div>
+                <div class="ttl">~/on-call · 03:14 AM</div>
+              </div>
+              <span class="c"># the on-call ritual</span><br />
+              <span class="p">$</span>
+              <span class="w">grep -r "KeyError" /var/log/app/</span><br />
+              <span class="c"># 4 matches across 12,401 log lines.</span><br />
+              <span class="p">$</span>
+              <span class="w"
+                >git log --since="2 days ago" --oneline | head -20</span
+              ><br />
+              <span class="c"># 47 commits. Which one was it?</span><br />
+              <span class="p">$</span>
+              <span class="w"
+                >kubectl describe pod mw-kube-agent-dz6s4 -n mw-agent-ns</span
+              ><br />
+              <span class="e"
+                >Events: 15,943 events seen. Restart count: 2,847.</span
+              >
+            </div>
+          </div>
+          <div class="pageno">05</div>
+        </section>
 
-<!-- ============ SLIDE 4 — NUMBERS ============ -->
-<section class="slide" data-slide="4">
-  <div class="brand"><span class="mw-mark">M</span> 01 · THE PROBLEM</div>
-  <div class="meta"><span class="dot alert"></span><span>SIGNAL</span></div>
-  <div class="pad">
-    <div class="kicker reveal">What the industry is actually paying for</div>
-    <h2 class="reveal">Observability got <span class="serif grad">prettier.</span><br/>On-call got <span class="red">heavier.</span></h2>
-    <div class="grid-3" style="margin-top:56px">
-      <div class="card reveal" data-delay="3">
-        <div class="k">Engineer time on RCA</div>
-        <div class="v"><span class="grad">60</span><small>%</small></div>
-        <div class="d">Up to six in ten hours hunting cause, not fixing it. The dashboard told them something broke. Nothing told them why.</div>
-      </div>
-      <div class="card reveal" data-delay="4">
-        <div class="k">Real customer noise</div>
-        <div class="v"><span class="grad">1,073</span><small>fires</small></div>
-        <div class="d">One misconfigured CPU monitor. Seven days. Zero resolutions. Signal drowned in the channel meant to surface it.</div>
-      </div>
-      <div class="card reveal" data-delay="5">
-        <div class="k">Tools in a single P1</div>
-        <div class="v"><span class="grad">5–6</span></div>
-        <div class="d">PagerDuty, Datadog, Loki, GitHub, Slack, a wiki from 2024. Every tab switch costs minutes. Every minute costs revenue.</div>
-      </div>
-    </div>
-    <p class="muted reveal mono" style="margin-top:32px;font-size:11px;letter-spacing:.1em;border-top:1px solid var(--mw-line);padding-top:20px">SOURCE · MIDDLEWARE BENCHMARK + CUSTOMER OBSERVATION DATA · 2026</p>
-  </div>
-  <div class="pageno">04</div>
-</section>
+        <!-- ============ SLIDE 6 — REFRAME ============ -->
+        <section class="slide" data-slide="6">
+          <div class="brand">
+            <span class="mw-mark">M</span> 02 · THE REFRAME
+          </div>
+          <div class="pad center">
+            <div class="kicker reveal">
+              If all the data is already in one place...
+            </div>
+            <h2 class="reveal" style="font-size: 84px; max-width: 1100px">
+              why are <span class="serif">humans</span> still doing the
+              <span class="grad">correlation</span> work?
+            </h2>
+            <p
+              class="lede reveal"
+              style="margin-top: 48px; max-width: 920px; font-size: 22px"
+            >
+              That's the question that runs through this hour. The last decade
+              made observability platforms great at
+              <em class="ink-2">telling</em> you something is wrong. The next is
+              about systems that <em class="ink-2">fix</em> it.
+            </p>
+          </div>
+          <div class="pageno">06</div>
+        </section>
 
-<!-- ============ SLIDE 5 — AI WORSE ============ -->
-<section class="slide" data-slide="5">
-  <div class="brand"><span class="mw-mark">M</span> 01 · THE PROBLEM</div>
-  <div class="meta"><span class="dot alert"></span><span>03:14 AM</span></div>
-  <div class="pad">
-    <div class="kicker reveal">The plot twist nobody asked for</div>
-    <h2 class="reveal">AI <span class="serif grad">writes</span> the bug.<br/>You ship it. You debug it. <span class="red">At 3 AM.</span></h2>
-    <p class="lede reveal" style="margin-top:36px;max-width:960px">Copilot. Cursor. In-house LLMs. Your team ships more code than ever. Tests pass. Review passes. Production catches the edge case nobody wrote a test for. Somebody has to find it. Today, that somebody is a human with a laptop and a coffee.</p>
-    <div class="terminal reveal" style="margin-top:32px;max-width:880px">
-      <div class="head">
-        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-        <div class="ttl">~/on-call · 03:14 AM</div>
-      </div>
-      <span class="c"># the on-call ritual</span><br/>
-      <span class="p">$</span> <span class="w">grep -r "KeyError" /var/log/app/</span><br/>
-      <span class="c"># 4 matches across 12,401 log lines.</span><br/>
-      <span class="p">$</span> <span class="w">git log --since="2 days ago" --oneline | head -20</span><br/>
-      <span class="c"># 47 commits. Which one was it?</span><br/>
-      <span class="p">$</span> <span class="w">kubectl describe pod mw-kube-agent-dz6s4 -n mw-agent-ns</span><br/>
-      <span class="e">Events: 15,943 events seen. Restart count: 2,847.</span>
-    </div>
-  </div>
-  <div class="pageno">05</div>
-</section>
+        <!-- ============ SLIDE 7 — INTRO OPSAI ============ -->
+        <section class="slide" data-slide="7">
+          <div class="brand"><span class="mw-mark">M</span> 03 · OPSAI</div>
+          <div class="meta">
+            <span class="dot"></span><span>GA · 2026</span>
+          </div>
+          <div class="pad">
+            <div class="kicker reveal">Meet the agent</div>
+            <h1 class="reveal" style="font-size: 140px">
+              Ops<span class="grad">AI</span>.
+            </h1>
+            <p
+              class="lede reveal"
+              style="margin-top: 20px; max-width: 1000px; font-size: 22px"
+            >
+              An AI SRE agent that lives inside Middleware. Watches your stack.
+              Finds the root cause. Ships a pull request with the fix. For
+              Kubernetes, it applies the change directly.
+            </p>
+            <div class="grid-4" style="margin-top: 48px">
+              <div class="card accent reveal" data-delay="3">
+                <div class="k">Detects</div>
+                <div
+                  style="
+                    font-size: 24px;
+                    line-height: 1.25;
+                    margin-top: 8px;
+                    font-weight: 600;
+                  "
+                >
+                  APM · RUM<br />K8s · Logs
+                </div>
+              </div>
+              <div class="card accent reveal" data-delay="4">
+                <div class="k">Diagnoses</div>
+                <div
+                  style="
+                    font-size: 24px;
+                    line-height: 1.25;
+                    margin-top: 8px;
+                    font-weight: 600;
+                  "
+                >
+                  Code-aware<br />RCA
+                </div>
+              </div>
+              <div class="card accent reveal" data-delay="5">
+                <div class="k">Resolves</div>
+                <div
+                  style="
+                    font-size: 24px;
+                    line-height: 1.25;
+                    margin-top: 8px;
+                    font-weight: 600;
+                  "
+                >
+                  PR or<br />direct fix
+                </div>
+              </div>
+              <div class="card accent reveal" data-delay="6">
+                <div class="k">Ingests</div>
+                <div
+                  style="
+                    font-size: 24px;
+                    line-height: 1.25;
+                    margin-top: 8px;
+                    font-weight: 600;
+                  "
+                >
+                  Datadog<br />Grafana
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pageno">07</div>
+        </section>
 
-<!-- ============ SLIDE 6 — REFRAME ============ -->
-<section class="slide" data-slide="6">
-  <div class="brand"><span class="mw-mark">M</span> 02 · THE REFRAME</div>
-  <div class="pad center">
-    <div class="kicker reveal">If all the data is already in one place...</div>
-    <h2 class="reveal" style="font-size:84px;max-width:1100px">why are <span class="serif">humans</span> still doing the <span class="grad">correlation</span> work?</h2>
-    <p class="lede reveal" style="margin-top:48px;max-width:920px;font-size:22px">That's the question that runs through this hour. The last decade made observability platforms great at <em class="ink-2">telling</em> you something is wrong. The next is about systems that <em class="ink-2">fix</em> it.</p>
-  </div>
-  <div class="pageno">06</div>
-</section>
+        <!-- ============ SLIDE 8 — MULTI-SOURCE ============ -->
+        <section class="slide" data-slide="8">
+          <div class="brand"><span class="mw-mark">M</span> 04 · DETECTION</div>
+          <div class="pad">
+            <div class="kicker reveal">Where signals come from</div>
+            <h2 class="reveal">
+              Multi-source <span class="serif grad">error detection.</span>
+            </h2>
+            <p class="lede reveal" style="margin-top: 14px; max-width: 900px">
+              Errors don't pick a single layer to live in. Neither does OpsAI.
+            </p>
+            <div class="source-grid">
+              <div class="source-card reveal" data-delay="3">
+                <div class="icon">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline
+                      points="22 12 18 12 15 21 9 3 6 12 2 12"
+                    ></polyline>
+                  </svg>
+                </div>
+                <div class="lbl">APM TRACES</div>
+                <div class="ttl">Runtime exceptions</div>
+                <div class="desc">
+                  Backend crashes and exceptions across Python, Node, Go, Java,
+                  Next.js.
+                </div>
+              </div>
+              <div class="source-card reveal" data-delay="4">
+                <div class="icon">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                  </svg>
+                </div>
+                <div class="lbl">KUBERNETES</div>
+                <div class="ttl">Warnings & events</div>
+                <div class="desc">
+                  OOM kills, pod crashes, config drifts, init container
+                  failures.
+                </div>
+              </div>
+              <div class="source-card reveal" data-delay="5">
+                <div class="icon">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <circle cx="12" cy="12" r="4"></circle>
+                  </svg>
+                </div>
+                <div class="lbl">RUM SESSIONS</div>
+                <div class="ttl">Browser-side crashes</div>
+                <div class="desc">
+                  Console errors, network failures, user journey breaks.
+                </div>
+              </div>
+              <div class="source-card reveal" data-delay="6">
+                <div class="icon">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                </div>
+                <div class="lbl">3RD-PARTY ALERTS</div>
+                <div class="ttl">Datadog · Grafana</div>
+                <div class="desc">
+                  Ingests their alerts, queries their data, runs investigation
+                  in Middleware.
+                </div>
+              </div>
+            </div>
+            <p
+              class="muted reveal mono"
+              style="margin-top: 32px; font-size: 11px; letter-spacing: 0.12em"
+            >
+              ONE PANEL. EVERY LAYER. NO MIGRATION REQUIRED.
+            </p>
+          </div>
+          <div class="pageno">08</div>
+        </section>
 
-<!-- ============ SLIDE 7 — INTRO OPSAI ============ -->
-<section class="slide" data-slide="7">
-  <div class="brand"><span class="mw-mark">M</span> 03 · OPSAI</div>
-  <div class="meta"><span class="dot"></span><span>GA · 2026</span></div>
-  <div class="pad">
-    <div class="kicker reveal">Meet the agent</div>
-    <h1 class="reveal" style="font-size:140px">Ops<span class="grad">AI</span>.</h1>
-    <p class="lede reveal" style="margin-top:20px;max-width:1000px;font-size:22px">An AI SRE agent that lives inside Middleware. Watches your stack. Finds the root cause. Ships a pull request with the fix. For Kubernetes, it applies the change directly.</p>
-    <div class="grid-4" style="margin-top:48px">
-      <div class="card accent reveal" data-delay="3">
-        <div class="k">Detects</div>
-        <div style="font-size:24px;line-height:1.25;margin-top:8px;font-weight:600">APM · RUM<br/>K8s · Logs</div>
-      </div>
-      <div class="card accent reveal" data-delay="4">
-        <div class="k">Diagnoses</div>
-        <div style="font-size:24px;line-height:1.25;margin-top:8px;font-weight:600">Code-aware<br/>RCA</div>
-      </div>
-      <div class="card accent reveal" data-delay="5">
-        <div class="k">Resolves</div>
-        <div style="font-size:24px;line-height:1.25;margin-top:8px;font-weight:600">PR or<br/>direct fix</div>
-      </div>
-      <div class="card accent reveal" data-delay="6">
-        <div class="k">Ingests</div>
-        <div style="font-size:24px;line-height:1.25;margin-top:8px;font-weight:600">Datadog<br/>Grafana</div>
-      </div>
-    </div>
-  </div>
-  <div class="pageno">07</div>
-</section>
+        <!-- ============ SLIDE 9 — ANALOGY ============ -->
+        <section class="slide" data-slide="9">
+          <div class="brand"><span class="mw-mark">M</span> 03 · OPSAI</div>
+          <div class="pad center">
+            <div class="kicker reveal">A way to think about it</div>
+            <h2 class="reveal" style="font-size: 64px; max-width: 1100px">
+              Think of OpsAI as the<br />on-call engineer who
+              <span class="serif">doesn't</span><br /><span class="grad"
+                >context-switch.</span
+              >
+            </h2>
+            <p
+              class="lede reveal"
+              style="margin-top: 36px; max-width: 900px; font-size: 20px"
+            >
+              Doesn't sleep. Doesn't forget the runbook. Knows every service
+              from the load balancer to the line of code. Reads only what it
+              needs. Writes the fix. Asks you to review before merge — unless
+              it's Kubernetes, where you've already told it to just go.
+            </p>
+          </div>
+          <div class="pageno">09</div>
+        </section>
 
-<!-- ============ SLIDE 8 — MULTI-SOURCE ============ -->
-<section class="slide" data-slide="8">
-  <div class="brand"><span class="mw-mark">M</span> 04 · DETECTION</div>
-  <div class="pad">
-    <div class="kicker reveal">Where signals come from</div>
-    <h2 class="reveal">Multi-source <span class="serif grad">error detection.</span></h2>
-    <p class="lede reveal" style="margin-top:14px;max-width:900px">Errors don't pick a single layer to live in. Neither does OpsAI.</p>
-    <div class="source-grid">
-      <div class="source-card reveal" data-delay="3">
-        <div class="icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-        </div>
-        <div class="lbl">APM TRACES</div>
-        <div class="ttl">Runtime exceptions</div>
-        <div class="desc">Backend crashes and exceptions across Python, Node, Go, Java, Next.js.</div>
-      </div>
-      <div class="source-card reveal" data-delay="4">
-        <div class="icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
-        </div>
-        <div class="lbl">KUBERNETES</div>
-        <div class="ttl">Warnings & events</div>
-        <div class="desc">OOM kills, pod crashes, config drifts, init container failures.</div>
-      </div>
-      <div class="source-card reveal" data-delay="5">
-        <div class="icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle></svg>
-        </div>
-        <div class="lbl">RUM SESSIONS</div>
-        <div class="ttl">Browser-side crashes</div>
-        <div class="desc">Console errors, network failures, user journey breaks.</div>
-      </div>
-      <div class="source-card reveal" data-delay="6">
-        <div class="icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-        </div>
-        <div class="lbl">3RD-PARTY ALERTS</div>
-        <div class="ttl">Datadog · Grafana</div>
-        <div class="desc">Ingests their alerts, queries their data, runs investigation in Middleware.</div>
-      </div>
-    </div>
-    <p class="muted reveal mono" style="margin-top:32px;font-size:11px;letter-spacing:.12em">ONE PANEL. EVERY LAYER. NO MIGRATION REQUIRED.</p>
-  </div>
-  <div class="pageno">08</div>
-</section>
+        <!-- ============ SLIDE 10 — 5-STEP FLOW ============ -->
+        <section class="slide" data-slide="10">
+          <div class="brand">
+            <span class="mw-mark">M</span> 04 · HOW IT WORKS
+          </div>
+          <div class="pad">
+            <div class="kicker reveal">
+              From incident to fix · no human required
+            </div>
+            <h2 class="reveal" style="font-size: 54px">
+              Five steps.
+              <span class="serif grad">Most of them happen</span> without you.
+            </h2>
+            <div class="flow">
+              <div class="step reveal" data-delay="3">
+                <div class="n"><span class="dot"></span>STEP 01</div>
+                <div class="t">Detect</div>
+                <div class="b">
+                  Identify issues across APM, K8s, RUM, alerts, and third-party
+                  signals.
+                </div>
+              </div>
+              <div class="arrow">→</div>
+              <div class="step reveal" data-delay="4">
+                <div class="n"><span class="dot"></span>STEP 02</div>
+                <div class="t">Root cause</div>
+                <div class="b">
+                  Correlate traces, logs, metrics, recent commits. Tailor
+                  analysis to the layer.
+                </div>
+              </div>
+              <div class="arrow">→</div>
+              <div class="step reveal" data-delay="5">
+                <div class="n"><span class="dot"></span>STEP 03</div>
+                <div class="t">Resolve</div>
+                <div class="b">
+                  Generate fix. Highlight affected code. Trace back to original
+                  PR.
+                </div>
+              </div>
+              <div class="arrow">→</div>
+              <div class="step reveal" data-delay="6">
+                <div class="n"><span class="dot"></span>STEP 04</div>
+                <div class="t">Generate PR</div>
+                <div class="b">
+                  Auto-open pull request with diff. Or hand RCA to the engineer
+                  to merge manually.
+                </div>
+              </div>
+              <div class="arrow">→</div>
+              <div class="step reveal" data-delay="7">
+                <div class="n"><span class="dot"></span>STEP 05</div>
+                <div class="t">Learn</div>
+                <div class="b">
+                  Adapts to your system's quirks over time. Gets better with
+                  every resolved incident.
+                </div>
+              </div>
+            </div>
+            <p
+              class="muted reveal mono"
+              style="margin-top: 32px; font-size: 11px; letter-spacing: 0.12em"
+            >
+              END-TO-END · TYPICALLY UNDER 3 MINUTES
+            </p>
+          </div>
+          <div class="pageno">10</div>
+        </section>
 
-<!-- ============ SLIDE 9 — ANALOGY ============ -->
-<section class="slide" data-slide="9">
-  <div class="brand"><span class="mw-mark">M</span> 03 · OPSAI</div>
-  <div class="pad center">
-    <div class="kicker reveal">A way to think about it</div>
-    <h2 class="reveal" style="font-size:64px;max-width:1100px">Think of OpsAI as the<br/>on-call engineer who <span class="serif">doesn't</span><br/><span class="grad">context-switch.</span></h2>
-    <p class="lede reveal" style="margin-top:36px;max-width:900px;font-size:20px">Doesn't sleep. Doesn't forget the runbook. Knows every service from the load balancer to the line of code. Reads only what it needs. Writes the fix. Asks you to review before merge — unless it's Kubernetes, where you've already told it to just go.</p>
-  </div>
-  <div class="pageno">09</div>
-</section>
+        <!-- ============ SLIDE 11 — ARCHITECTURE ============ -->
+        <section class="slide" data-slide="11">
+          <div class="brand">
+            <span class="mw-mark">M</span> 04 · ARCHITECTURE
+          </div>
+          <div class="pad">
+            <div class="row" style="gap: 48px; flex: 1">
+              <div class="col" style="max-width: 460px">
+                <div class="kicker reveal">The architectural bet</div>
+                <h2 class="reveal" style="font-size: 48px">
+                  Sit on the <span class="serif grad">data,</span> not
+                  <span class="violet">on top</span> of someone else's API.
+                </h2>
+                <p
+                  class="muted reveal"
+                  style="margin-top: 20px; font-size: 16px; line-height: 1.55"
+                >
+                  Agents that orchestrate over third-party APIs pay a tax on
+                  every query: latency, rate limits, schema mismatches. OpsAI
+                  gets first-party access to telemetry. No hops. No translation.
+                </p>
+                <p
+                  class="muted reveal"
+                  style="margin-top: 16px; font-size: 16px; line-height: 1.55"
+                >
+                  Already on Datadog or Grafana? OpsAI ingests their alerts and
+                  pulls their metrics. Migration optional.
+                </p>
+              </div>
+              <div class="col">
+                <div class="stack-diagram">
+                  <div class="layer brain reveal" data-delay="3">
+                    <span class="name">OpsAI SRE Agent</span
+                    ><span class="src">REASONING + ACTION</span>
+                  </div>
+                  <div
+                    class="layer reveal"
+                    data-delay="4"
+                    style="margin-left: 20px"
+                  >
+                    <span class="name">GitHub MCP Server</span
+                    ><span class="src">CODE · SCOPED · READ-ONLY</span>
+                  </div>
+                  <div
+                    class="layer reveal"
+                    data-delay="5"
+                    style="margin-left: 20px"
+                  >
+                    <span class="name">Middleware Unified Platform</span
+                    ><span class="src">FIRST-PARTY DATA</span>
+                  </div>
+                  <div
+                    class="layer reveal"
+                    data-delay="6"
+                    style="margin-left: 40px"
+                  >
+                    <span class="name">APM Traces</span
+                    ><span class="src">BACKEND</span>
+                  </div>
+                  <div
+                    class="layer reveal"
+                    data-delay="7"
+                    style="margin-left: 40px"
+                  >
+                    <span class="name">RUM Sessions</span
+                    ><span class="src">FRONTEND</span>
+                  </div>
+                  <div
+                    class="layer reveal"
+                    data-delay="8"
+                    style="margin-left: 40px"
+                  >
+                    <span class="name">Kubernetes Telemetry</span
+                    ><span class="src">INFRA</span>
+                  </div>
+                  <div
+                    class="layer reveal"
+                    data-delay="9"
+                    style="margin-left: 40px"
+                  >
+                    <span class="name">Logs · Metrics · Alerts</span
+                    ><span class="src">CORE</span>
+                  </div>
+                  <div
+                    class="layer reveal"
+                    data-delay="10"
+                    style="margin-left: 20px"
+                  >
+                    <span class="name">3rd-Party Ingestion</span
+                    ><span class="src">DATADOG · GRAFANA</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pageno">11</div>
+        </section>
 
-<!-- ============ SLIDE 10 — 5-STEP FLOW ============ -->
-<section class="slide" data-slide="10">
-  <div class="brand"><span class="mw-mark">M</span> 04 · HOW IT WORKS</div>
-  <div class="pad">
-    <div class="kicker reveal">From incident to fix · no human required</div>
-    <h2 class="reveal" style="font-size:54px">Five steps. <span class="serif grad">Most of them happen</span> without you.</h2>
-    <div class="flow">
-      <div class="step reveal" data-delay="3"><div class="n"><span class="dot"></span>STEP 01</div><div class="t">Detect</div><div class="b">Identify issues across APM, K8s, RUM, alerts, and third-party signals.</div></div>
-      <div class="arrow">→</div>
-      <div class="step reveal" data-delay="4"><div class="n"><span class="dot"></span>STEP 02</div><div class="t">Root cause</div><div class="b">Correlate traces, logs, metrics, recent commits. Tailor analysis to the layer.</div></div>
-      <div class="arrow">→</div>
-      <div class="step reveal" data-delay="5"><div class="n"><span class="dot"></span>STEP 03</div><div class="t">Resolve</div><div class="b">Generate fix. Highlight affected code. Trace back to original PR.</div></div>
-      <div class="arrow">→</div>
-      <div class="step reveal" data-delay="6"><div class="n"><span class="dot"></span>STEP 04</div><div class="t">Generate PR</div><div class="b">Auto-open pull request with diff. Or hand RCA to the engineer to merge manually.</div></div>
-      <div class="arrow">→</div>
-      <div class="step reveal" data-delay="7"><div class="n"><span class="dot"></span>STEP 05</div><div class="t">Learn</div><div class="b">Adapts to your system's quirks over time. Gets better with every resolved incident.</div></div>
-    </div>
-    <p class="muted reveal mono" style="margin-top:32px;font-size:11px;letter-spacing:.12em">END-TO-END · TYPICALLY UNDER 3 MINUTES</p>
-  </div>
-  <div class="pageno">10</div>
-</section>
+        <!-- ============ SLIDE 12 — RED SWITCH ============ -->
+        <section class="slide" data-slide="12">
+          <div class="brand">
+            <span class="mw-mark">M</span> 05 · GOVERNANCE
+          </div>
+          <div class="pad center">
+            <div class="kicker reveal">Humans have the final say</div>
+            <h2 class="reveal" style="font-size: 84px">
+              The <span class="serif red">"Red Switch."</span>
+            </h2>
+            <p
+              class="lede reveal"
+              style="margin-top: 32px; max-width: 1000px; font-size: 22px"
+            >
+              OpsAI operates within boundaries you define. It suggests
+              solutions, generates PRs, applies fixes only where you've granted
+              permission. Developers review AI-written code before merge.
+              Co-pilot SRE, not autonomous chaos.
+            </p>
+            <div
+              class="grid-3"
+              style="margin-top: 48px; width: 100%; max-width: 1100px"
+            >
+              <div class="card reveal" data-delay="3">
+                <div class="k">01 · AUTO INVESTIGATION</div>
+                <div
+                  style="
+                    font-size: 16px;
+                    line-height: 1.5;
+                    margin-top: 14px;
+                    color: var(--mw-ink-2);
+                  "
+                >
+                  Investigation runs automatically for every critical alert. You
+                  don't trigger it. It just happens.
+                </div>
+              </div>
+              <div class="card reveal" data-delay="4">
+                <div class="k">02 · PICK & CHOOSE</div>
+                <div
+                  style="
+                    font-size: 16px;
+                    line-height: 1.5;
+                    margin-top: 14px;
+                    color: var(--mw-ink-2);
+                  "
+                >
+                  Per-cluster, per-service settings. Production stays
+                  propose-only. Staging gets full Auto Fix.
+                </div>
+              </div>
+              <div class="card reveal" data-delay="5">
+                <div class="k">03 · TOKEN CONTROL</div>
+                <div
+                  style="
+                    font-size: 16px;
+                    line-height: 1.5;
+                    margin-top: 14px;
+                    color: var(--mw-ink-2);
+                  "
+                >
+                  Balance automation with resource caps. Settings let you cap
+                  how much the agent can spend.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pageno">12</div>
+        </section>
 
-<!-- ============ SLIDE 11 — ARCHITECTURE ============ -->
-<section class="slide" data-slide="11">
-  <div class="brand"><span class="mw-mark">M</span> 04 · ARCHITECTURE</div>
-  <div class="pad">
-    <div class="row" style="gap:48px;flex:1">
-      <div class="col" style="max-width:460px">
-        <div class="kicker reveal">The architectural bet</div>
-        <h2 class="reveal" style="font-size:48px">Sit on the <span class="serif grad">data,</span> not <span class="violet">on top</span> of someone else's API.</h2>
-        <p class="muted reveal" style="margin-top:20px;font-size:16px;line-height:1.55">Agents that orchestrate over third-party APIs pay a tax on every query: latency, rate limits, schema mismatches. OpsAI gets first-party access to telemetry. No hops. No translation.</p>
-        <p class="muted reveal" style="margin-top:16px;font-size:16px;line-height:1.55">Already on Datadog or Grafana? OpsAI ingests their alerts and pulls their metrics. Migration optional.</p>
-      </div>
-      <div class="col">
-        <div class="stack-diagram">
-          <div class="layer brain reveal" data-delay="3"><span class="name">OpsAI SRE Agent</span><span class="src">REASONING + ACTION</span></div>
-          <div class="layer reveal" data-delay="4" style="margin-left:20px"><span class="name">GitHub MCP Server</span><span class="src">CODE · SCOPED · READ-ONLY</span></div>
-          <div class="layer reveal" data-delay="5" style="margin-left:20px"><span class="name">Middleware Unified Platform</span><span class="src">FIRST-PARTY DATA</span></div>
-          <div class="layer reveal" data-delay="6" style="margin-left:40px"><span class="name">APM Traces</span><span class="src">BACKEND</span></div>
-          <div class="layer reveal" data-delay="7" style="margin-left:40px"><span class="name">RUM Sessions</span><span class="src">FRONTEND</span></div>
-          <div class="layer reveal" data-delay="8" style="margin-left:40px"><span class="name">Kubernetes Telemetry</span><span class="src">INFRA</span></div>
-          <div class="layer reveal" data-delay="9" style="margin-left:40px"><span class="name">Logs · Metrics · Alerts</span><span class="src">CORE</span></div>
-          <div class="layer reveal" data-delay="10" style="margin-left:20px"><span class="name">3rd-Party Ingestion</span><span class="src">DATADOG · GRAFANA</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="pageno">11</div>
-</section>
+        <!-- ============ SLIDE 13 — PRIVACY ============ -->
+        <section class="slide" data-slide="13">
+          <div class="brand"><span class="mw-mark">M</span> 05 · TRUST</div>
+          <div class="pad center">
+            <div class="kicker reveal">Before you ask</div>
+            <h2 class="reveal" style="font-size: 56px; max-width: 1100px">
+              "So this thing reads <span class="red">all</span> my code?"
+            </h2>
+            <h3
+              class="serif grad reveal"
+              style="margin-top: 16px; font-size: 56px"
+            >
+              No.
+            </h3>
+            <div
+              class="grid-3"
+              style="margin-top: 56px; width: 100%; max-width: 1100px"
+            >
+              <div class="card reveal" data-delay="3">
+                <div class="k">01 · SCOPED READS</div>
+                <div
+                  style="
+                    font-size: 17px;
+                    line-height: 1.45;
+                    margin-top: 14px;
+                    color: var(--mw-ink-2);
+                  "
+                >
+                  Only files referenced in a specific stack trace. Not your
+                  repo. Not the directory next door.
+                </div>
+              </div>
+              <div class="card reveal" data-delay="4">
+                <div class="k">02 · GITHUB MCP</div>
+                <div
+                  style="
+                    font-size: 17px;
+                    line-height: 1.45;
+                    margin-top: 14px;
+                    color: var(--mw-ink-2);
+                  "
+                >
+                  Access via Model Context Protocol. Auditable. Revocable. You
+                  can pull the key tomorrow.
+                </div>
+              </div>
+              <div class="card reveal" data-delay="5">
+                <div class="k">03 · ZERO STORAGE</div>
+                <div
+                  style="
+                    font-size: 17px;
+                    line-height: 1.45;
+                    margin-top: 14px;
+                    color: var(--mw-ink-2);
+                  "
+                >
+                  Source stays in your repo. Middleware retains nothing. Error
+                  context isn't archived.
+                </div>
+              </div>
+            </div>
+            <p
+              class="muted reveal mono"
+              style="margin-top: 48px; font-size: 11px; letter-spacing: 0.14em"
+            >
+              SOC 2 TYPE II · ISO 27001 · GDPR · HIPAA
+            </p>
+          </div>
+          <div class="pageno">13</div>
+        </section>
 
-<!-- ============ SLIDE 12 — RED SWITCH ============ -->
-<section class="slide" data-slide="12">
-  <div class="brand"><span class="mw-mark">M</span> 05 · GOVERNANCE</div>
-  <div class="pad center">
-    <div class="kicker reveal">Humans have the final say</div>
-    <h2 class="reveal" style="font-size:84px">The <span class="serif red">"Red Switch."</span></h2>
-    <p class="lede reveal" style="margin-top:32px;max-width:1000px;font-size:22px">OpsAI operates within boundaries you define. It suggests solutions, generates PRs, applies fixes only where you've granted permission. Developers review AI-written code before merge. Co-pilot SRE, not autonomous chaos.</p>
-    <div class="grid-3" style="margin-top:48px;width:100%;max-width:1100px">
-      <div class="card reveal" data-delay="3">
-        <div class="k">01 · AUTO INVESTIGATION</div>
-        <div style="font-size:16px;line-height:1.5;margin-top:14px;color:var(--mw-ink-2)">Investigation runs automatically for every critical alert. You don't trigger it. It just happens.</div>
-      </div>
-      <div class="card reveal" data-delay="4">
-        <div class="k">02 · PICK & CHOOSE</div>
-        <div style="font-size:16px;line-height:1.5;margin-top:14px;color:var(--mw-ink-2)">Per-cluster, per-service settings. Production stays propose-only. Staging gets full Auto Fix.</div>
-      </div>
-      <div class="card reveal" data-delay="5">
-        <div class="k">03 · TOKEN CONTROL</div>
-        <div style="font-size:16px;line-height:1.5;margin-top:14px;color:var(--mw-ink-2)">Balance automation with resource caps. Settings let you cap how much the agent can spend.</div>
-      </div>
-    </div>
-  </div>
-  <div class="pageno">12</div>
-</section>
+        <!-- ============ SLIDE 14 — DEMO TRANSITION ============ -->
+        <section class="slide" data-slide="14">
+          <div class="brand"><span class="mw-mark">M</span> 06 · LIVE DEMO</div>
+          <div class="meta">
+            <span class="dot alert"></span><span>LIVE</span>
+          </div>
+          <div
+            class="hero-glow"
+            style="right: auto; left: -300px; bottom: -300px"
+          ></div>
+          <div class="pad center-all">
+            <span
+              class="tag live reveal"
+              style="font-size: 13px; padding: 8px 18px"
+              >DEMO MODE · ON</span
+            >
+            <h1 class="reveal" style="font-size: 160px; margin-top: 24px">
+              Enough <span class="serif grad">talk.</span>
+            </h1>
+            <p class="lede reveal" style="margin-top: 24px; max-width: 880px">
+              Switching to the live environment. We break a service. Watch OpsAI
+              catch it. Merge the fix it writes. Without leaving Middleware.
+            </p>
+            <div
+              class="row reveal"
+              style="
+                margin-top: 48px;
+                gap: 14px;
+                flex-wrap: wrap;
+                justify-content: center;
+              "
+            >
+              <span class="tag">DEMO 1 · APM ERROR → AUTO-PR</span>
+              <span class="tag">DEMO 2 · K8S AUTO-FIX</span>
+              <span class="tag">DEMO 3 · DATADOG/GRAFANA INGEST</span>
+            </div>
+          </div>
+          <div class="pageno">14</div>
+        </section>
 
-<!-- ============ SLIDE 13 — PRIVACY ============ -->
-<section class="slide" data-slide="13">
-  <div class="brand"><span class="mw-mark">M</span> 05 · TRUST</div>
-  <div class="pad center">
-    <div class="kicker reveal">Before you ask</div>
-    <h2 class="reveal" style="font-size:56px;max-width:1100px">"So this thing reads <span class="red">all</span> my code?"</h2>
-    <h3 class="serif grad reveal" style="margin-top:16px;font-size:56px">No.</h3>
-    <div class="grid-3" style="margin-top:56px;width:100%;max-width:1100px">
-      <div class="card reveal" data-delay="3">
-        <div class="k">01 · SCOPED READS</div>
-        <div style="font-size:17px;line-height:1.45;margin-top:14px;color:var(--mw-ink-2)">Only files referenced in a specific stack trace. Not your repo. Not the directory next door.</div>
-      </div>
-      <div class="card reveal" data-delay="4">
-        <div class="k">02 · GITHUB MCP</div>
-        <div style="font-size:17px;line-height:1.45;margin-top:14px;color:var(--mw-ink-2)">Access via Model Context Protocol. Auditable. Revocable. You can pull the key tomorrow.</div>
-      </div>
-      <div class="card reveal" data-delay="5">
-        <div class="k">03 · ZERO STORAGE</div>
-        <div style="font-size:17px;line-height:1.45;margin-top:14px;color:var(--mw-ink-2)">Source stays in your repo. Middleware retains nothing. Error context isn't archived.</div>
-      </div>
-    </div>
-    <p class="muted reveal mono" style="margin-top:48px;font-size:11px;letter-spacing:.14em">SOC 2 TYPE II · ISO 27001 · GDPR · HIPAA</p>
-  </div>
-  <div class="pageno">13</div>
-</section>
+        <!-- ============ SLIDE 15 — DEMO 1 ============ -->
+        <section class="slide" data-slide="15">
+          <div class="brand">
+            <span class="mw-mark">M</span> 06 · LIVE DEMO · 01
+          </div>
+          <div class="meta">
+            <span class="dot alert"></span><span>LIVE</span>
+          </div>
+          <div class="pad">
+            <div class="kicker reveal">Demo 1 · APM error → auto-PR</div>
+            <h2 class="reveal">
+              Python <span class="serif grad">KeyError.</span> Watch it heal.
+            </h2>
+            <ul
+              class="dot-list reveal"
+              style="max-width: 1000px; margin-top: 24px"
+            >
+              <li>
+                Trigger: hit
+                <span class="mono blue">/user/&lt;username&gt;</span> with a
+                user that doesn't exist
+                <small>500s in APM within seconds</small>
+              </li>
+              <li>
+                OpsAI ingests the alert, pulls the trace, finds
+                <span class="mono blue">flask/app.py:78</span>
+                <small
+                  >unsafe dict lookup, raw
+                  <span class="mono">user_data[username]</span></small
+                >
+              </li>
+              <li>
+                GitHub MCP reads only that file, generates a fix using
+                <span class="mono blue">.get()</span> + proper 404
+                <small>side-by-side diff in the findings panel</small>
+              </li>
+              <li>
+                PR opens:
+                <span class="mono blue"
+                  >#39 · Fix: Handle missing users gracefully</span
+                >
+                <small>reviewable, full context attached, ready to merge</small>
+              </li>
+            </ul>
+            <div class="demo-frame reveal" style="min-height: 140px">
+              <div class="label">▶ SCREEN SHARE</div>
+              <div class="title">Middleware · APM · OpsAI panel</div>
+            </div>
+          </div>
+          <div class="pageno">15</div>
+        </section>
 
-<!-- ============ SLIDE 14 — DEMO TRANSITION ============ -->
-<section class="slide" data-slide="14">
-  <div class="brand"><span class="mw-mark">M</span> 06 · LIVE DEMO</div>
-  <div class="meta"><span class="dot alert"></span><span>LIVE</span></div>
-  <div class="hero-glow" style="right:auto;left:-300px;bottom:-300px"></div>
-  <div class="pad center-all">
-    <span class="tag live reveal" style="font-size:13px;padding:8px 18px">DEMO MODE · ON</span>
-    <h1 class="reveal" style="font-size:160px;margin-top:24px">Enough <span class="serif grad">talk.</span></h1>
-    <p class="lede reveal" style="margin-top:24px;max-width:880px">Switching to the live environment. We break a service. Watch OpsAI catch it. Merge the fix it writes. Without leaving Middleware.</p>
-    <div class="row reveal" style="margin-top:48px;gap:14px;flex-wrap:wrap;justify-content:center">
-      <span class="tag">DEMO 1 · APM ERROR → AUTO-PR</span>
-      <span class="tag">DEMO 2 · K8S AUTO-FIX</span>
-      <span class="tag">DEMO 3 · DATADOG/GRAFANA INGEST</span>
-    </div>
-  </div>
-  <div class="pageno">14</div>
-</section>
-
-<!-- ============ SLIDE 15 — DEMO 1 ============ -->
-<section class="slide" data-slide="15">
-  <div class="brand"><span class="mw-mark">M</span> 06 · LIVE DEMO · 01</div>
-  <div class="meta"><span class="dot alert"></span><span>LIVE</span></div>
-  <div class="pad">
-    <div class="kicker reveal">Demo 1 · APM error → auto-PR</div>
-    <h2 class="reveal">Python <span class="serif grad">KeyError.</span> Watch it heal.</h2>
-    <ul class="dot-list reveal" style="max-width:1000px;margin-top:24px">
-      <li>Trigger: hit <span class="mono blue">/user/&lt;username&gt;</span> with a user that doesn't exist <small>500s in APM within seconds</small></li>
-      <li>OpsAI ingests the alert, pulls the trace, finds <span class="mono blue">flask/app.py:78</span> <small>unsafe dict lookup, raw <span class="mono">user_data[username]</span></small></li>
-      <li>GitHub MCP reads only that file, generates a fix using <span class="mono blue">.get()</span> + proper 404 <small>side-by-side diff in the findings panel</small></li>
-      <li>PR opens: <span class="mono blue">#39 · Fix: Handle missing users gracefully</span> <small>reviewable, full context attached, ready to merge</small></li>
-    </ul>
-    <div class="demo-frame reveal" style="min-height:140px">
-      <div class="label">▶ SCREEN SHARE</div>
-      <div class="title">Middleware · APM · OpsAI panel</div>
-    </div>
-  </div>
-  <div class="pageno">15</div>
-</section>
-
-<!-- ============ SLIDE 16 — DIFF ============ -->
-<section class="slide" data-slide="16">
-  <div class="brand"><span class="mw-mark">M</span> 06 · LIVE DEMO · 01</div>
-  <div class="pad">
-    <div class="kicker reveal">What it actually shipped</div>
-    <h3 class="reveal" style="font-size:42px">The diff <span class="serif grad">OpsAI</span> opened.</h3>
-    <div class="diff reveal">
-      <div class="pane bad">
-        <div class="head">― BEFORE<span class="filebadge mono">flask/app.py:61-66</span></div>
-<pre><span class="minus">- @app.route('/user/&lt;username&gt;')</span>
+        <!-- ============ SLIDE 16 — DIFF ============ -->
+        <section class="slide" data-slide="16">
+          <div class="brand">
+            <span class="mw-mark">M</span> 06 · LIVE DEMO · 01
+          </div>
+          <div class="pad">
+            <div class="kicker reveal">What it actually shipped</div>
+            <h3 class="reveal" style="font-size: 42px">
+              The diff <span class="serif grad">OpsAI</span> opened.
+            </h3>
+            <div class="diff reveal">
+              <div class="pane bad">
+                <div class="head">
+                  ― BEFORE<span class="filebadge mono">flask/app.py:61-66</span>
+                </div>
+                <pre><span class="minus">- @app.route('/user/&lt;username&gt;')</span>
 <span class="minus">- def user_profile(username):</span>
 <span class="minus">-     user = user_data[username]</span>
 <span class="minus">-     if not user:</span>
 <span class="minus">-         raise Exception("missing user")</span>
 <span class="minus">-     return jsonify(user)</span></pre>
-      </div>
-      <div class="pane good">
-        <div class="head">+ AFTER<span class="filebadge mono">flask/app.py:61-66</span></div>
-<pre><span class="plus">+ @app.route('/user/&lt;username&gt;')</span>
+              </div>
+              <div class="pane good">
+                <div class="head">
+                  + AFTER<span class="filebadge mono">flask/app.py:61-66</span>
+                </div>
+                <pre><span class="plus">+ @app.route('/user/&lt;username&gt;')</span>
 <span class="plus">+ def user_profile(username):</span>
 <span class="plus">+     if username not in user_data:</span>
 <span class="plus">+         abort(404, description=f"user {username} not found")</span>
 <span class="plus">+     user = user_data.get(username)</span>
 <span class="plus">+     return jsonify(user)</span></pre>
-      </div>
-    </div>
-    <p class="muted reveal" style="margin-top:24px;font-size:15px;max-width:1100px;line-height:1.5">Raw lookup gone. Unreachable <span class="mono blue">if not user</span> block stripped. Proper 404 instead of a 500. One file. Five lines. Reviewer-ready.</p>
-  </div>
-  <div class="pageno">16</div>
-</section>
-
-<!-- ============ SLIDE 17 — DEMO 2 K8S ============ -->
-<section class="slide" data-slide="17">
-  <div class="brand"><span class="mw-mark">M</span> 06 · LIVE DEMO · 02</div>
-  <div class="meta"><span class="dot alert"></span><span>LIVE</span></div>
-  <div class="pad">
-    <div class="kicker reveal">Demo 2 · Kubernetes auto-fix</div>
-    <h2 class="reveal">CrashLoopBackOff. <span class="serif grad">No PR.</span> Just apply.</h2>
-    <ul class="dot-list reveal" style="max-width:1100px;margin-top:24px">
-      <li>Symptom: <span class="mono blue">mw-kube-agent-v3</span> back-off restarting. 5 of 6 DaemonSet pods affected. <small>15,943 events. Restart counts from 682 to 2,500+.</small></li>
-      <li>OpsAI reads pod state, configs, events. Identifies port binding conflict on <span class="mono blue">127.0.0.1:8888</span>. <small>DaemonSet with <span class="mono">hostNetwork: true</span> colliding with existing Deployment.</small></li>
-      <li>Two modes presented: <span style="color:var(--mw-amber)">Auto RCA</span> (propose) or <span class="green">Auto Fix</span> (just go). <small>Per-cluster toggle. Default is propose.</small></li>
-      <li>Auto Fix selected. Manifest patched. Pods stabilize. <small>Cluster monitoring coverage returns from 17% to 100%.</small></li>
-    </ul>
-    <div class="demo-frame reveal" style="min-height:140px">
-      <div class="label">▶ SCREEN SHARE</div>
-      <div class="title">Middleware · Kubernetes · OpsAI</div>
-    </div>
-  </div>
-  <div class="pageno">17</div>
-</section>
-
-<!-- ============ SLIDE 18 — DEMO 3 DD/GRAFANA ============ -->
-<section class="slide" data-slide="18">
-  <div class="brand"><span class="mw-mark">M</span> 06 · LIVE DEMO · 03</div>
-  <div class="meta"><span class="dot alert"></span><span>LIVE</span></div>
-  <div class="pad">
-    <div class="kicker reveal">Demo 3 · You don't have to leave Datadog</div>
-    <h2 class="reveal" style="font-size:52px">Bring the <span class="serif grad">alert</span> in.<br/>OpsAI runs the <span class="violet">investigation.</span></h2>
-    <div class="row reveal" style="gap:32px;margin-top:40px;flex:1">
-      <div class="col card accent" style="flex:1">
-        <div class="k">⊕ GRAFANA INGEST · LIVE</div>
-        <div style="margin-top:14px;font-size:17px;line-height:1.5;color:var(--mw-ink)">A "High CPU" alert fires in Grafana. OpsAI ingests the payload, runs a Prometheus range query, and calls it: false positive, misconfigured threshold, not a real CPU event. Recommends the rule tweak.</div>
-      </div>
-      <div class="col card accent" style="flex:1">
-        <div class="k">⊕ DATADOG INGEST · LIVE</div>
-        <div style="margin-top:14px;font-size:17px;line-height:1.5;color:var(--mw-ink)">A Datadog monitor pages on a service error. OpsAI pulls metrics, logs, and traces from the Datadog API, correlates against deploy history, surfaces the suspect commit inside Middleware.</div>
-      </div>
-    </div>
-    <p class="muted reveal mono" style="margin-top:32px;font-size:11px;letter-spacing:.12em">NO MIGRATION REQUIRED · KEEP YOUR EXISTING STACK</p>
-  </div>
-  <div class="pageno">18</div>
-</section>
-
-<!-- ============ SLIDE 19 — RESULTS + DISTRIBUTION ============ -->
-<section class="slide" data-slide="19">
-  <div class="brand"><span class="mw-mark">M</span> 07 · RESULTS</div>
-  <div class="pad">
-    <div class="kicker reveal">Numbers we'll put our name on</div>
-    <h2 class="reveal">What it does in <span class="serif grad">production.</span></h2>
-    <div class="row" style="gap:40px;margin-top:32px;align-items:flex-start">
-      <div class="col" style="flex:1.2">
-        <div class="grid-2" style="gap:16px">
-          <div class="card accent reveal" data-delay="3">
-            <div class="k">Auto-resolved (ours)</div>
-            <div class="v"><span class="grad">50</span><small>%+</small></div>
-            <div class="d">Of Middleware's own production incidents resolved before a human is paged.</div>
+              </div>
+            </div>
+            <p
+              class="muted reveal"
+              style="
+                margin-top: 24px;
+                font-size: 15px;
+                max-width: 1100px;
+                line-height: 1.5;
+              "
+            >
+              Raw lookup gone. Unreachable
+              <span class="mono blue">if not user</span> block stripped. Proper
+              404 instead of a 500. One file. Five lines. Reviewer-ready.
+            </p>
           </div>
-          <div class="card accent reveal" data-delay="4">
-            <div class="k">Detection → resolution</div>
-            <div class="v"><span class="grad">70</span><small>%+</small></div>
-            <div class="d">Across customer beta accounts. Page in. Fix out. No manual stitching.</div>
+          <div class="pageno">16</div>
+        </section>
+
+        <!-- ============ SLIDE 17 — DEMO 2 K8S ============ -->
+        <section class="slide" data-slide="17">
+          <div class="brand">
+            <span class="mw-mark">M</span> 06 · LIVE DEMO · 02
           </div>
-          <div class="card accent reveal" data-delay="5">
-            <div class="k">MTTR reduction</div>
-            <div class="v"><span class="grad">5</span><small>×</small></div>
-            <div class="d">On incidents OpsAI handles end-to-end. Compared to pre-OpsAI baselines.</div>
+          <div class="meta">
+            <span class="dot alert"></span><span>LIVE</span>
           </div>
-          <div class="card accent reveal" data-delay="6">
-            <div class="k">Fix accuracy</div>
-            <div class="v"><span class="grad">75</span><small>%</small></div>
-            <div class="d">Of fixes correct on first pass. Rest get human review before merge.</div>
+          <div class="pad">
+            <div class="kicker reveal">Demo 2 · Kubernetes auto-fix</div>
+            <h2 class="reveal">
+              CrashLoopBackOff. <span class="serif grad">No PR.</span> Just
+              apply.
+            </h2>
+            <ul
+              class="dot-list reveal"
+              style="max-width: 1100px; margin-top: 24px"
+            >
+              <li>
+                Symptom:
+                <span class="mono blue">mw-kube-agent-v3</span> back-off
+                restarting. 5 of 6 DaemonSet pods affected.
+                <small>15,943 events. Restart counts from 682 to 2,500+.</small>
+              </li>
+              <li>
+                OpsAI reads pod state, configs, events. Identifies port binding
+                conflict on <span class="mono blue">127.0.0.1:8888</span>.
+                <small
+                  >DaemonSet with
+                  <span class="mono">hostNetwork: true</span> colliding with
+                  existing Deployment.</small
+                >
+              </li>
+              <li>
+                Two modes presented:
+                <span style="color: var(--mw-amber)">Auto RCA</span> (propose)
+                or <span class="green">Auto Fix</span> (just go).
+                <small>Per-cluster toggle. Default is propose.</small>
+              </li>
+              <li>
+                Auto Fix selected. Manifest patched. Pods stabilize.
+                <small
+                  >Cluster monitoring coverage returns from 17% to 100%.</small
+                >
+              </li>
+            </ul>
+            <div class="demo-frame reveal" style="min-height: 140px">
+              <div class="label">▶ SCREEN SHARE</div>
+              <div class="title">Middleware · Kubernetes · OpsAI</div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div class="col reveal" data-delay="7" style="flex:1">
-        <div class="k mono" style="font-size:11px;color:var(--mw-muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px">AI REMEDIATION DISTRIBUTION</div>
-        <div class="dist-chart">
-          <div class="dist-bar"><span class="lbl">K8S Auto-Fix</span><div class="track"><div class="fill" style="--w:0.92"></div></div><span class="val">92%</span></div>
-          <div class="dist-bar"><span class="lbl">APM → PR</span><div class="track"><div class="fill" style="--w:0.78"></div></div><span class="val">78%</span></div>
-          <div class="dist-bar"><span class="lbl">RUM → PR</span><div class="track"><div class="fill" style="--w:0.71"></div></div><span class="val">71%</span></div>
-          <div class="dist-bar"><span class="lbl">Datadog Ingest</span><div class="track"><div class="fill" style="--w:0.65"></div></div><span class="val">65%</span></div>
-          <div class="dist-bar"><span class="lbl">Grafana Ingest</span><div class="track"><div class="fill" style="--w:0.62"></div></div><span class="val">62%</span></div>
-        </div>
-        <p class="muted mono" style="margin-top:20px;font-size:10px;letter-spacing:.1em">% OF DETECTED INCIDENTS RESOLVED WITHOUT HUMAN ACTION</p>
+          <div class="pageno">17</div>
+        </section>
+
+        <!-- ============ SLIDE 18 — DEMO 3 DD/GRAFANA ============ -->
+        <section class="slide" data-slide="18">
+          <div class="brand">
+            <span class="mw-mark">M</span> 06 · LIVE DEMO · 03
+          </div>
+          <div class="meta">
+            <span class="dot alert"></span><span>LIVE</span>
+          </div>
+          <div class="pad">
+            <div class="kicker reveal">
+              Demo 3 · You don't have to leave Datadog
+            </div>
+            <h2 class="reveal" style="font-size: 52px">
+              Bring the <span class="serif grad">alert</span> in.<br />OpsAI
+              runs the <span class="violet">investigation.</span>
+            </h2>
+            <div
+              class="row reveal"
+              style="gap: 32px; margin-top: 40px; flex: 1"
+            >
+              <div class="col card accent" style="flex: 1">
+                <div class="k">⊕ GRAFANA INGEST · LIVE</div>
+                <div
+                  style="
+                    margin-top: 14px;
+                    font-size: 17px;
+                    line-height: 1.5;
+                    color: var(--mw-ink);
+                  "
+                >
+                  A "High CPU" alert fires in Grafana. OpsAI ingests the
+                  payload, runs a Prometheus range query, and calls it: false
+                  positive, misconfigured threshold, not a real CPU event.
+                  Recommends the rule tweak.
+                </div>
+              </div>
+              <div class="col card accent" style="flex: 1">
+                <div class="k">⊕ DATADOG INGEST · LIVE</div>
+                <div
+                  style="
+                    margin-top: 14px;
+                    font-size: 17px;
+                    line-height: 1.5;
+                    color: var(--mw-ink);
+                  "
+                >
+                  A Datadog monitor pages on a service error. OpsAI pulls
+                  metrics, logs, and traces from the Datadog API, correlates
+                  against deploy history, surfaces the suspect commit inside
+                  Middleware.
+                </div>
+              </div>
+            </div>
+            <p
+              class="muted reveal mono"
+              style="margin-top: 32px; font-size: 11px; letter-spacing: 0.12em"
+            >
+              NO MIGRATION REQUIRED · KEEP YOUR EXISTING STACK
+            </p>
+          </div>
+          <div class="pageno">18</div>
+        </section>
+
+        <!-- ============ SLIDE 19 — RESULTS + DISTRIBUTION ============ -->
+        <section class="slide" data-slide="19">
+          <div class="brand"><span class="mw-mark">M</span> 07 · RESULTS</div>
+          <div class="pad">
+            <div class="kicker reveal">Numbers we'll put our name on</div>
+            <h2 class="reveal">
+              What it does in <span class="serif grad">production.</span>
+            </h2>
+            <div
+              class="row"
+              style="gap: 40px; margin-top: 32px; align-items: flex-start"
+            >
+              <div class="col" style="flex: 1.2">
+                <div class="grid-2" style="gap: 16px">
+                  <div class="card accent reveal" data-delay="3">
+                    <div class="k">Auto-resolved (ours)</div>
+                    <div class="v">
+                      <span class="grad">50</span><small>%+</small>
+                    </div>
+                    <div class="d">
+                      Of Middleware's own production incidents resolved before a
+                      human is paged.
+                    </div>
+                  </div>
+                  <div class="card accent reveal" data-delay="4">
+                    <div class="k">Detection → resolution</div>
+                    <div class="v">
+                      <span class="grad">70</span><small>%+</small>
+                    </div>
+                    <div class="d">
+                      Across customer beta accounts. Page in. Fix out. No manual
+                      stitching.
+                    </div>
+                  </div>
+                  <div class="card accent reveal" data-delay="5">
+                    <div class="k">MTTR reduction</div>
+                    <div class="v">
+                      <span class="grad">5</span><small>×</small>
+                    </div>
+                    <div class="d">
+                      On incidents OpsAI handles end-to-end. Compared to
+                      pre-OpsAI baselines.
+                    </div>
+                  </div>
+                  <div class="card accent reveal" data-delay="6">
+                    <div class="k">Fix accuracy</div>
+                    <div class="v">
+                      <span class="grad">75</span><small>%</small>
+                    </div>
+                    <div class="d">
+                      Of fixes correct on first pass. Rest get human review
+                      before merge.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col reveal" data-delay="7" style="flex: 1">
+                <div
+                  class="k mono"
+                  style="
+                    font-size: 11px;
+                    color: var(--mw-muted);
+                    letter-spacing: 0.14em;
+                    text-transform: uppercase;
+                    margin-bottom: 14px;
+                  "
+                >
+                  AI REMEDIATION DISTRIBUTION
+                </div>
+                <div class="dist-chart">
+                  <div class="dist-bar">
+                    <span class="lbl">K8S Auto-Fix</span>
+                    <div class="track">
+                      <div class="fill" style="--w: 0.92"></div>
+                    </div>
+                    <span class="val">92%</span>
+                  </div>
+                  <div class="dist-bar">
+                    <span class="lbl">APM → PR</span>
+                    <div class="track">
+                      <div class="fill" style="--w: 0.78"></div>
+                    </div>
+                    <span class="val">78%</span>
+                  </div>
+                  <div class="dist-bar">
+                    <span class="lbl">RUM → PR</span>
+                    <div class="track">
+                      <div class="fill" style="--w: 0.71"></div>
+                    </div>
+                    <span class="val">71%</span>
+                  </div>
+                  <div class="dist-bar">
+                    <span class="lbl">Datadog Ingest</span>
+                    <div class="track">
+                      <div class="fill" style="--w: 0.65"></div>
+                    </div>
+                    <span class="val">65%</span>
+                  </div>
+                  <div class="dist-bar">
+                    <span class="lbl">Grafana Ingest</span>
+                    <div class="track">
+                      <div class="fill" style="--w: 0.62"></div>
+                    </div>
+                    <span class="val">62%</span>
+                  </div>
+                </div>
+                <p
+                  class="muted mono"
+                  style="
+                    margin-top: 20px;
+                    font-size: 10px;
+                    letter-spacing: 0.1em;
+                  "
+                >
+                  % OF DETECTED INCIDENTS RESOLVED WITHOUT HUMAN ACTION
+                </p>
+              </div>
+            </div>
+            <p
+              class="muted reveal"
+              style="
+                margin-top: 24px;
+                max-width: 1100px;
+                font-size: 14px;
+                line-height: 1.5;
+                border-top: 1px solid var(--mw-line);
+                padding-top: 16px;
+              "
+            >
+              Customer ceiling: Corgi reports a
+              <strong class="ink-2">~90% drop</strong> in debugging time.
+              Head-to-head against competing agents, OpsAI runs
+              <strong class="ink-2">6×–10× faster</strong> on identical prompts.
+            </p>
+          </div>
+          <div class="pageno">19</div>
+        </section>
+
+        <!-- ============ SLIDE 20 — QUOTE ============ -->
+        <section class="slide" data-slide="20">
+          <div class="brand"><span class="mw-mark">M</span> 07 · RESULTS</div>
+          <div
+            class="pad center"
+            style="
+              padding-left: 120px;
+              padding-right: 80px;
+              justify-content: center;
+            "
+          >
+            <div class="quote-wrap reveal">
+              <span class="quote-mark">"</span>
+              <p class="quote-text">
+                Middleware resolved time spent on debugging and resolving issues
+                by nearly <span class="grad">ninety percent.</span>
+              </p>
+            </div>
+            <div class="quote-attr reveal">
+              NICO LAQUA · CEO · CORGI INSURANCE
+            </div>
+          </div>
+          <div class="pageno">20</div>
+        </section>
+
+        <!-- ============ SLIDE 21 — Q&A + RESOURCES ============ -->
+        <section class="slide" data-slide="21">
+          <div class="brand"><span class="mw-mark">M</span> 08 · Q&amp;A</div>
+          <div class="pad">
+            <div class="kicker reveal">The part where you push back</div>
+            <h1 class="reveal" style="font-size: 140px">
+              Ask <span class="serif grad">anything.</span>
+            </h1>
+            <p class="lede reveal" style="margin-top: 20px; max-width: 920px">
+              Pricing. Edge cases. The fix it got wrong last week. The
+              compliance story for finance. The roadmap. Drop questions in chat
+              or unmute.
+            </p>
+            <div
+              class="row reveal"
+              style="margin-top: 40px; gap: 14px; flex-wrap: wrap"
+            >
+              <span class="tag">#opsai</span>
+              <span class="tag">@middleware_labs</span>
+              <span class="tag">community.middleware.io</span>
+            </div>
+            <div class="grid-3 reveal" style="margin-top: 40px">
+              <div class="card">
+                <div class="k">PRODUCT</div>
+                <div
+                  style="
+                    font-size: 14px;
+                    margin-top: 8px;
+                    font-weight: 500;
+                    color: var(--mw-blue);
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                  "
+                >
+                  middleware.io/product/ops-ai
+                </div>
+              </div>
+              <div class="card">
+                <div class="k">DOCS</div>
+                <div
+                  style="
+                    font-size: 14px;
+                    margin-top: 8px;
+                    font-weight: 500;
+                    color: var(--mw-blue);
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                  "
+                >
+                  docs.middleware.io/opsai
+                </div>
+              </div>
+              <div class="card">
+                <div class="k">BENCHMARK</div>
+                <div
+                  style="
+                    font-size: 14px;
+                    margin-top: 8px;
+                    font-weight: 500;
+                    color: var(--mw-blue);
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                  "
+                >
+                  .../ops-ai-vs-resolve-ai
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pageno">21</div>
+        </section>
+
+        <!-- ============ SLIDE 22 — END ============ -->
+        <section class="slide" data-slide="22">
+          <div class="brand"><span class="mw-mark">M</span> FIN</div>
+          <div class="meta">
+            <span class="dot"></span><span>END · 60:00</span>
+          </div>
+          <div class="hero-glow"></div>
+          <div
+            class="pad"
+            style="justify-content: center; align-items: flex-start"
+          >
+            <div class="kicker reveal">Thanks for the hour.</div>
+            <h1 class="end-h reveal">
+              Less <span class="strike">firefighting.</span><br /><span
+                class="serif grad"
+                >More building.</span
+              >
+            </h1>
+            <p
+              class="lede reveal"
+              style="margin-top: 28px; max-width: 900px; font-size: 22px"
+            >
+              If OpsAI ships your next fix while you're asleep, we did our job.
+              If it doesn't, hit us in Slack and tell us why. That's how this
+              gets better.
+            </p>
+            <div
+              class="row reveal"
+              style="
+                margin-top: 48px;
+                gap: 14px;
+                align-items: center;
+                flex-wrap: wrap;
+              "
+            >
+              <span class="tag glow">⚡ START FREE · app.middleware.io</span>
+              <span class="tag">BOOK DEMO · middleware.io/demo-request</span>
+            </div>
+            <p
+              class="muted reveal mono"
+              style="margin-top: 64px; font-size: 11px; letter-spacing: 0.16em"
+            >
+              ⌨︎ ESC TO EXIT · ARROW KEYS TO REPLAY
+            </p>
+          </div>
+          <div class="pageno">22</div>
+        </section>
       </div>
     </div>
-    <p class="muted reveal" style="margin-top:24px;max-width:1100px;font-size:14px;line-height:1.5;border-top:1px solid var(--mw-line);padding-top:16px">
-      Customer ceiling: Corgi reports a <strong class="ink-2">~90% drop</strong> in debugging time. Head-to-head against competing agents, OpsAI runs <strong class="ink-2">6×–10× faster</strong> on identical prompts.
-    </p>
-  </div>
-  <div class="pageno">19</div>
-</section>
 
-<!-- ============ SLIDE 20 — QUOTE ============ -->
-<section class="slide" data-slide="20">
-  <div class="brand"><span class="mw-mark">M</span> 07 · RESULTS</div>
-  <div class="pad center" style="padding-left:120px;padding-right:80px;justify-content:center">
-    <div class="quote-wrap reveal">
-      <span class="quote-mark">"</span>
-      <p class="quote-text">Middleware resolved time spent on debugging and resolving issues by nearly <span class="grad">ninety percent.</span></p>
-    </div>
-    <div class="quote-attr reveal">NICO LAQUA · CEO · CORGI INSURANCE</div>
-  </div>
-  <div class="pageno">20</div>
-</section>
+    <script>
+      (function () {
+        const slides = document.querySelectorAll(".slide");
+        const total = slides.length;
+        const curEl = document.getElementById("curSlide");
+        const totEl = document.getElementById("totSlide");
+        const bar = document.getElementById("progressBar");
+        const fsBtn = document.getElementById("fsBtn");
+        let current = 0;
+        let isTransitioning = false;
+        if (totEl) {
+          totEl.textContent = String(total).padStart(2, "0");
+        }
 
-<!-- ============ SLIDE 21 — Q&A + RESOURCES ============ -->
-<section class="slide" data-slide="21">
-  <div class="brand"><span class="mw-mark">M</span> 08 · Q&amp;A</div>
-  <div class="pad">
-    <div class="kicker reveal">The part where you push back</div>
-    <h1 class="reveal" style="font-size:140px">Ask <span class="serif grad">anything.</span></h1>
-    <p class="lede reveal" style="margin-top:20px;max-width:920px">Pricing. Edge cases. The fix it got wrong last week. The compliance story for finance. The roadmap. Drop questions in chat or unmute.</p>
-    <div class="row reveal" style="margin-top:40px;gap:14px;flex-wrap:wrap">
-      <span class="tag">#opsai</span>
-      <span class="tag">@middleware_labs</span>
-      <span class="tag">community.middleware.io</span>
-    </div>
-    <div class="grid-3 reveal" style="margin-top:40px">
-      <div class="card">
-        <div class="k">PRODUCT</div>
-        <div style="font-size:14px;margin-top:8px;font-weight:500;color:var(--mw-blue);font-family:'JetBrains Mono',monospace">middleware.io/product/ops-ai</div>
-      </div>
-      <div class="card">
-        <div class="k">DOCS</div>
-        <div style="font-size:14px;margin-top:8px;font-weight:500;color:var(--mw-blue);font-family:'JetBrains Mono',monospace">docs.middleware.io/opsai</div>
-      </div>
-      <div class="card">
-        <div class="k">BENCHMARK</div>
-        <div style="font-size:14px;margin-top:8px;font-weight:500;color:var(--mw-blue);font-family:'JetBrains Mono',monospace">.../ops-ai-vs-resolve-ai</div>
-      </div>
-    </div>
-  </div>
-  <div class="pageno">21</div>
-</section>
+        function go(i) {
+          if (i < 0 || i >= total || i === current || isTransitioning) return;
+          isTransitioning = true;
+          const prev = slides[current];
+          prev?.classList.remove("active");
+          prev?.classList.add("exiting");
+          setTimeout(() => {
+            prev?.classList.remove("exiting");
+            isTransitioning = false;
+          }, 600);
+          current = i;
+          slides[current].classList.add("active");
+          if (curEl) curEl.textContent = String(current + 1).padStart(2, "0");
+          if (bar) bar.style.width = ((current + 1) / total) * 100 + "%";
+          history.replaceState(null, "", "#" + (current + 1));
+        }
 
-<!-- ============ SLIDE 22 — END ============ -->
-<section class="slide" data-slide="22">
-  <div class="brand"><span class="mw-mark">M</span> FIN</div>
-  <div class="meta"><span class="dot"></span><span>END · 60:00</span></div>
-  <div class="hero-glow"></div>
-  <div class="pad" style="justify-content:center;align-items:flex-start">
-    <div class="kicker reveal">Thanks for the hour.</div>
-    <h1 class="end-h reveal">Less <span class="strike">firefighting.</span><br/><span class="serif grad">More building.</span></h1>
-    <p class="lede reveal" style="margin-top:28px;max-width:900px;font-size:22px">If OpsAI ships your next fix while you're asleep, we did our job. If it doesn't, hit us in Slack and tell us why. That's how this gets better.</p>
-    <div class="row reveal" style="margin-top:48px;gap:14px;align-items:center;flex-wrap:wrap">
-      <span class="tag glow">⚡ START FREE · app.middleware.io</span>
-      <span class="tag">BOOK DEMO · middleware.io/demo-request</span>
-    </div>
-    <p class="muted reveal mono" style="margin-top:64px;font-size:11px;letter-spacing:.16em">⌨︎ ESC TO EXIT · ARROW KEYS TO REPLAY</p>
-  </div>
-  <div class="pageno">22</div>
-</section>
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") {
+            e.preventDefault();
+            go(current + 1);
+          } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
+            e.preventDefault();
+            go(current - 1);
+          } else if (e.key === "Home") {
+            e.preventDefault();
+            go(0);
+          } else if (e.key === "End") {
+            e.preventDefault();
+            go(total - 1);
+          } else if (e.key === "f" || e.key === "F") {
+            toggleFs();
+          } else if (/^[0-9]$/.test(e.key)) {
+            const n = parseInt(e.key, 10);
+            if (n >= 1 && n <= 9 && n <= total) {
+              go(n - 1);
+            }
+          }
+        });
 
-  </div>
-</div>
+        let touchStartX = 0;
+        document.addEventListener(
+          "touchstart",
+          (e) => {
+            touchStartX = e.touches[0].clientX;
+          },
+          { passive: true },
+        );
+        document.addEventListener(
+          "touchend",
+          (e) => {
+            const dx = e.changedTouches[0].clientX - touchStartX;
+            if (Math.abs(dx) > 50) {
+              go(current + (dx < 0 ? 1 : -1));
+            }
+          },
+          { passive: true },
+        );
 
-<script>
-(function(){
-  const slides = document.querySelectorAll('.slide');
-  const total = slides.length;
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const curEl = document.getElementById('curSlide');
-  const totEl = document.getElementById('totSlide');
-  const bar = document.getElementById('progressBar');
-  const fsBtn = document.getElementById('fsBtn');
-  let current = 0;
-  let isTransitioning = false;
-
-  totEl.textContent = String(total).padStart(2,'0');
-
-  function go(i){
-    if(i < 0 || i >= total || i === current || isTransitioning) return;
-    isTransitioning = true;
-    const prev = slides[current];
-    prev.classList.remove('active');
-    prev.classList.add('exiting');
-    setTimeout(()=>{
-      prev.classList.remove('exiting');
-      isTransitioning = false;
-    },600);
-    current = i;
-    slides[current].classList.add('active');
-    curEl.textContent = String(current+1).padStart(2,'0');
-    bar.style.width = ((current+1)/total * 100) + '%';
-    prevBtn.disabled = current === 0;
-    nextBtn.disabled = current === total-1;
-    history.replaceState(null,'','#'+(current+1));
-  }
-
-  prevBtn.addEventListener('click', ()=>go(current-1));
-  nextBtn.addEventListener('click', ()=>go(current+1));
-
-  document.addEventListener('keydown', (e)=>{
-    if(e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){
-      e.preventDefault(); go(current+1);
-    } else if(e.key === 'ArrowLeft' || e.key === 'PageUp'){
-      e.preventDefault(); go(current-1);
-    } else if(e.key === 'Home'){
-      e.preventDefault(); go(0);
-    } else if(e.key === 'End'){
-      e.preventDefault(); go(total-1);
-    } else if(e.key === 'f' || e.key === 'F'){
-      toggleFs();
-    } else if(/^[0-9]$/.test(e.key)){
-      const n = parseInt(e.key,10);
-      if(n >= 1 && n <= 9 && n <= total){ go(n-1); }
-    }
-  });
-
-  let touchStartX = 0;
-  document.addEventListener('touchstart', e=>{ touchStartX = e.touches[0].clientX; }, {passive:true});
-  document.addEventListener('touchend', e=>{
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    if(Math.abs(dx) > 50){ go(current + (dx < 0 ? 1 : -1)); }
-  }, {passive:true});
-
-  function toggleFs(){
-    if(!document.fullscreenElement){
-      document.documentElement.requestFullscreen().catch(()=>{});
-    } else {
-      document.exitFullscreen();
-    }
-  }
-  fsBtn.addEventListener('click', toggleFs);
-
-  // Initialize
-  const hash = parseInt(location.hash.replace('#',''),10);
-  if(!isNaN(hash) && hash >= 1 && hash <= total){
-    current = hash - 1;
-  }
-  slides[current].classList.add('active');
-  curEl.textContent = String(current+1).padStart(2,'0');
-  bar.style.width = ((current+1)/total * 100) + '%';
-  prevBtn.disabled = current === 0;
-  nextBtn.disabled = current === total-1;
-})();
-</script>
-
-</body>
+        function toggleFs() {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen();
+          }
+        }
+        // Initialize
+        const hash = parseInt(location.hash.replace("#", ""), 10);
+        if (!isNaN(hash) && hash >= 1 && hash <= total) {
+          current = hash - 1;
+        }
+        slides[current].classList.add("active");
+        if (curEl) curEl.textContent = String(current + 1).padStart(2, "0");
+        if (bar) bar.style.width = ((current + 1) / total) * 100 + "%";
+      })();
+    </script>
+  </body>
 </html>
